@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "x64\\Debug\\eMainMenuManipulators.obj",
+            "outputs": [
+                "x64\\Debug\\eMainMenuManipulators.h_4EA2C2D4522BC745.ifc.dt.module.json",
+                "x64\\Debug\\eMainMenuManipulators.h_4EA2C2D4522BC745.ifc.dt.d.json",
+                "x64\\Debug\\eMainMenuManipulators.h.ifc"
+            ],
+            "provides": [
+                {
+                    "logical-name": "C:\\Users\\1mPerec\\OneDrive\\Desktop\\projects\\ZombieFarmWIndows\\ZombieFarmWIndows\\eMainMenuManipulators.h",
+                    "source-path": "c:\\users\\1mperec\\onedrive\\desktop\\projects\\zombiefarmwindows\\zombiefarmwindows\\emainmenumanipulators.h",
+                    "lookup-method": "absolute"
+                }
+            ],
+            "requires": []
+        }
+    ]
+}

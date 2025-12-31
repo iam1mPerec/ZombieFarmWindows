@@ -1,0 +1,6 @@
+Weapon Rusty$Shovel
+Helmet Mystic$River
+Gloves Cold$Snap
+Boots Heavy$Stompers
+Chest Uthers$Pride
+Bandages Old$Strips

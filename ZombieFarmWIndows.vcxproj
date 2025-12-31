@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{b86dee4e-2a41-40ff-9bbd-62f3a41c0d4b}</ProjectGuid>
+    <RootNamespace>ZombieFarmWIndows</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>ZombieFarmWindows</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Abilities.cpp" />
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="BadList.cpp" />
+    <ClCompile Include="bandages.cpp" />
+    <ClCompile Include="Basher.cpp" />
+    <ClCompile Include="bomb.cpp" />
+    <ClCompile Include="boots.cpp" />
+    <ClCompile Include="buffs.cpp" />
+    <ClCompile Include="building.cpp" />
+    <ClCompile Include="chest.cpp" />
+    <ClCompile Include="constructions.cpp" />
+    <ClCompile Include="consumables.cpp" />
+    <ClCompile Include="Crasher.cpp" />
+    <ClCompile Include="DeBuff.cpp" />
+    <ClCompile Include="DialogBox.cpp" />
+    <ClCompile Include="eMainMenuSelection.h" />
+    <ClCompile Include="engine.cpp" />
+    <ClCompile Include="Equip.cpp" />
+    <ClCompile Include="equipment.cpp" />
+    <ClCompile Include="event.cpp" />
+    <ClCompile Include="events_list.cpp" />
+    <ClCompile Include="Farmer.cpp" />
+    <ClCompile Include="field.cpp" />
+    <ClCompile Include="Ghoul.cpp" />
+    <ClCompile Include="gloves.cpp" />
+    <ClCompile Include="GMBase.cpp" />
+    <ClCompile Include="GMGameMenu.cpp" />
+    <ClCompile Include="GMMainMenu.cpp" />
+    <ClCompile Include="GoodList.cpp" />
+    <ClCompile Include="grenade.cpp" />
+    <ClCompile Include="Healer.cpp" />
+    <ClCompile Include="helmet.cpp" />
+    <ClCompile Include="Horde.cpp" />
+    <ClCompile Include="Inventory.cpp" />
+    <ClCompile Include="item.cpp" />
+    <ClCompile Include="ItemLoader.cpp" />
+    <ClCompile Include="kit.cpp" />
+    <ClCompile Include="Leaper.cpp" />
+    <ClCompile Include="Lurker.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="olcConsoleGameEngine.cpp" />
+    <ClCompile Include="parts.cpp" />
+    <ClCompile Include="Party.cpp" />
+    <ClCompile Include="plant.cpp" />
+    <ClCompile Include="potion.cpp" />
+    <ClCompile Include="ProgressMenu.cpp" />
+    <ClCompile Include="ptime.cpp" />
+    <ClCompile Include="resources.cpp" />
+    <ClCompile Include="revive.cpp" />
+    <ClCompile Include="Scheme.cpp" />
+    <ClCompile Include="SchemeBook.cpp" />
+    <ClCompile Include="SideMenu.cpp" />
+    <ClCompile Include="Skills.cpp" />
+    <ClCompile Include="Sniper.cpp" />
+    <ClCompile Include="Solder.cpp" />
+    <ClCompile Include="str.cpp" />
+    <ClCompile Include="Tank.cpp" />
+    <ClCompile Include="Unit.cpp" />
+    <ClCompile Include="UpGrade.cpp" />
+    <ClCompile Include="Walker.cpp" />
+    <ClCompile Include="weapon.cpp" />
+    <ClCompile Include="work.cpp" />
+    <ClCompile Include="Zombie.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Abilities.h" />
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="BadList.h" />
+    <ClInclude Include="bandages.h" />
+    <ClInclude Include="Basher.h" />
+    <ClInclude Include="bomb.h" />
+    <ClInclude Include="boots.h" />
+    <ClInclude Include="buffs.h" />
+    <ClInclude Include="building.h" />
+    <ClInclude Include="buildings.h" />
+    <ClInclude Include="chest.h" />
+    <ClInclude Include="constructions.h" />
+    <ClInclude Include="consumables.h" />
+    <ClInclude Include="Crasher.h" />
+    <ClInclude Include="DeBuff.h" />
+    <ClInclude Include="DialogBox.h" />
+    <ClInclude Include="eColors.h" />
+    <ClInclude Include="eControls.h" />
+    <ClInclude Include="engine.h" />
+    <ClInclude Include="Equip.h" />
+    <ClInclude Include="equipment.h" />
+    <ClInclude Include="event.h" />
+    <ClInclude Include="events_list.h" />
+    <ClInclude Include="Farmer.h" />
+    <ClInclude Include="field.h" />
+    <ClInclude Include="Ghoul.h" />
+    <ClInclude Include="gloves.h" />
+    <ClInclude Include="GMBase.h" />
+    <ClInclude Include="GMGameMenu.h" />
+    <ClInclude Include="GMMainMenu.h" />
+    <ClInclude Include="GoodList.h" />
+    <ClInclude Include="grenade.h" />
+    <ClInclude Include="Healer.h" />
+    <ClInclude Include="helmet.h" />
+    <ClInclude Include="Horde.h" />
+    <ClInclude Include="Inventory.h" />
+    <ClInclude Include="item.h" />
+    <ClInclude Include="ItemLoader.h" />
+    <ClInclude Include="ItemTypes.h" />
+    <ClInclude Include="jobs.h" />
+    <ClInclude Include="keys.h" />
+    <ClInclude Include="kit.h" />
+    <ClInclude Include="Leaper.h" />
+    <ClInclude Include="Lurker.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="olcConsoleGameEngine.h" />
+    <ClInclude Include="Options.h" />
+    <ClInclude Include="parts.h" />
+    <ClInclude Include="Party.h" />
+    <ClInclude Include="plant.h" />
+    <ClInclude Include="plants.h" />
+    <ClInclude Include="potion.h" />
+    <ClInclude Include="ProgressMenu.h" />
+    <ClInclude Include="ptime.h" />
+    <ClInclude Include="resources.h" />
+    <ClInclude Include="revive.h" />
+    <ClInclude Include="Scheme.h" />
+    <ClInclude Include="SchemeBook.hpp" />
+    <ClInclude Include="screen.h" />
+    <ClInclude Include="Shop.h" />
+    <ClInclude Include="SideMenu.h" />
+    <ClInclude Include="Skills.h" />
+    <ClInclude Include="Sniper.h" />
+    <ClInclude Include="Solder.h" />
+    <ClInclude Include="str.h" />
+    <ClInclude Include="talents.h" />
+    <ClInclude Include="Tank.h" />
+    <ClInclude Include="texts_1.h" />
+    <ClInclude Include="titles.h" />
+    <ClInclude Include="Unit.h" />
+    <ClInclude Include="UpGrade.h" />
+    <ClInclude Include="Walker.h" />
+    <ClInclude Include="weapon.h" />
+    <ClInclude Include="work.h" />
+    <ClInclude Include="Zombie.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Equipment.txt" />
+    <Text Include="Eve.txt" />
+    <Text Include="Inventory.txt" />
+    <Text Include="Save.txt" />
+    <Text Include="Units.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
