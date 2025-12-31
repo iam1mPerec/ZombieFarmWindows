@@ -1,20 +1,3 @@
 ﻿  Scanning sources for module dependencies...
-  DialogBox.cpp
-  engine.cpp
-  field.cpp
-  GMBase.cpp
-  GMGameMenu.cpp
-C:\Users\1mPerec\OneDrive\Desktop\projects\ZombieFarmWIndows\ZombieFarmWIndows\texts_1.h(10,25): warning C4114: same type qualifier used more than once
-  (compiling source file 'GMGameMenu.cpp')
-  
-C:\Users\1mPerec\OneDrive\Desktop\projects\ZombieFarmWIndows\ZombieFarmWIndows\GMGameMenu.cpp(5689,24): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  GMMainMenu.cpp
-C:\Users\1mPerec\OneDrive\Desktop\projects\ZombieFarmWIndows\ZombieFarmWIndows\texts_1.h(10,25): warning C4114: same type qualifier used more than once
-  (compiling source file 'GMMainMenu.cpp')
-  
-  main.cpp
-  olcConsoleGameEngine.cpp
-C:\Users\1mPerec\OneDrive\Desktop\projects\ZombieFarmWIndows\ZombieFarmWIndows\olcConsoleGameEngine.cpp(379,12): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  SideMenu.cpp
-  Generating Code...
+  LINK : C:\Users\1mPerec\OneDrive\Desktop\projects\ZombieFarmWIndows\x64\Debug\ZombieFarmWindows.exe not found or not built by the last incremental link; performing full link
   ZombieFarmWIndows.vcxproj -> C:\Users\1mPerec\OneDrive\Desktop\projects\ZombieFarmWIndows\x64\Debug\ZombieFarmWindows.exe

@@ -39,9 +39,9 @@ bool engine::OnUserUpdate(float fElapsedTime) {
     if (m_keys[VK_DOWN].bPressed || m_keys[L'S'].bPressed) m_mode->controlSignal(eControls::DOWN);
     if (m_keys[VK_LEFT].bPressed || m_keys[L'A'].bPressed) m_mode->controlSignal(eControls::LEFT);
     if (m_keys[VK_RIGHT].bPressed || m_keys[L'D'].bPressed) m_mode->controlSignal(eControls::RIGHT);
-    if (m_keys[VK_RIGHT].bPressed || m_keys[L'I'].bPressed) m_mode->controlSignal(eControls::INFO);
-    if (m_keys[VK_RIGHT].bPressed || m_keys[L'C'].bPressed) m_mode->controlSignal(eControls::CLEAR);
-	if (m_keys[VK_RIGHT].bPressed || m_keys[L'L'].bPressed) m_mode->controlSignal(eControls::SELL);
+    if (m_keys[L'I'].bPressed) m_mode->controlSignal(eControls::INFO);
+    if (m_keys[L'C'].bPressed) m_mode->controlSignal(eControls::CLEAR);
+	if (m_keys[L'L'].bPressed) m_mode->controlSignal(eControls::SELL);
     
     //MARK: - Update state
 
