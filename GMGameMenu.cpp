@@ -1249,7 +1249,7 @@ int GMGameMenu::humanToSlash() const
 void GMGameMenu::zombieslashedAnimation(const int dmg)
 {
     m_engine->startAnimation(
-        6,
+        8,
         0.1f,
         [this](int frame) {
 		int ROWS = 10;
@@ -1303,9 +1303,11 @@ void GMGameMenu::zombieslashedAnimation(const int dmg)
         }
         print();
         }, [this, dmg] {
-
             horde.getUnit(selectedZombie)->damage(troops.getAttacker()->getDamage());
-            drawUndead();
+            clear();
+			drawUndead();
+            selector();
+			print();
         });
 }
 
@@ -5470,7 +5472,7 @@ GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
 
         m_engine->startAnimation(
             35,
-            0.02f,
+            0.01f,
             [this](int frame) { this->PopUpAnimation(frame); },
             [this]() { this->drawFinalInfoScreen(); }
         );
