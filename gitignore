@@ -1,0 +1,14 @@
+# Ignore everything
+*
+
+# But track directories(so we can recurse into subfolders)
+!*/
+
+# Track the.gitignore file itself
+!.gitignore
+
+# Allow specific extensions recursively
+!*.cpp
+!*.hpp
+!*.h
+!*.txt
