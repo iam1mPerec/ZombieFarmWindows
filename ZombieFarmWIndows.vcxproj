@@ -129,7 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Abilities.cpp" />
-    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="farmerAnimation.cpp" />
     <ClCompile Include="BadList.cpp" />
     <ClCompile Include="bandages.cpp" />
     <ClCompile Include="Basher.cpp" />
@@ -195,7 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Abilities.h" />
-    <ClInclude Include="Animation.h" />
+    <ClInclude Include="farmerAnimation.h" />
     <ClInclude Include="BadList.h" />
     <ClInclude Include="bandages.h" />
     <ClInclude Include="Basher.h" />

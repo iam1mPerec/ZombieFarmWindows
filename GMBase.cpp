@@ -26,7 +26,6 @@ void GMBase::clear()
 
 void GMBase::print()
 {
-	OutputDebugString(L"GameModeChanged\n");
 	for (int i = 0; i < x; i++)
 	{
 		for (int j = 0; j < y; j++)
@@ -49,7 +48,7 @@ void GMBase::print()
 			}
 			else if (screen[i][j] == '^')
 			{
-				m_engine->Draw(j, i, L'✖');
+				m_engine->Draw(j, i, L'X');
 			}
 			else if (screen[i][j] == 9)
 			{
@@ -77,7 +76,7 @@ void GMBase::print()
 			}
 			else if (screen[i][j] == 6)
 			{
-				m_engine->Draw(j, i, L'☐');
+				m_engine->Draw(j, i, L'▫');
 			}
 			else if (screen[i][j] == 7)
 			{

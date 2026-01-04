@@ -76,7 +76,7 @@ void GMMainMenu::selector(const int position, const char* name)
 	}
 }
 
-void GMMainMenu::Draw(float fElapsedTime)
+void GMMainMenu::Update(float fElapsedTime)
 {
 	switch (this->selection)
 	{

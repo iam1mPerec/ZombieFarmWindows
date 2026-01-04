@@ -36,7 +36,7 @@ void ProgressMenu::showProgress(float fElapsedTime)
     events.check4Dead();
     int count = events.getCount();
     
-    //count кол-во ивентов, которые помещаются на экране
+	//count the amount of events to show
     
     if (count > BottomPlank/2 - 1)
     {

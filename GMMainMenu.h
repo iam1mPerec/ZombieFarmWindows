@@ -20,5 +20,5 @@ public:
     void submit() override;
     void up() override;
 	void down() override;
-	void Draw(float fElapsedTime) override;
+	void Update(float fElapsedTime) override;
 };

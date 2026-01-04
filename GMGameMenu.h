@@ -22,7 +22,7 @@
 #include "UpGrade.h"
 #include "Party.h"
 #include "Horde.h"
-#include "Animation.h"
+#include "farmerAnimation.h"
 #include "Inventory.h"
 #include "ItemLoader.h"
 #include "GMBase.h"
@@ -34,6 +34,7 @@ class GMGameMenu :
 protected:
     int SidePlank;
     int BottomPlank;
+    int selectedZombie;
     int x1;
     int x2;
     int y1;
@@ -55,7 +56,7 @@ protected:
     BadList       stock;
     ProgressMenu  progress;
     constructions possession;
-    animation     Animation;
+    farmerAnimation     farmerAnimation;
     inventory     items;
     itemLoader    loader;
 
@@ -79,14 +80,16 @@ protected:
     void ZombieBuffAnimation();
     void ZombieBiteAninmation();
     void healingAnimation();
-    void winScreen();
-    void loseScreen();
+    void drawFinalWinScreen();
+    void drawFinalloseScreen();
     void showTime();
     void showSide();
     int  checkSpase();
     void showDialog();
     void mapResources();
-    void infoScreen();
+    void PopUpAnimation(int frame);
+    void drawFinalPopup(char popup[29][70]);
+    void drawFinalInfoScreen();
     void functional();
     void scaterShot(const int DMG);
     void heal();
@@ -123,7 +126,7 @@ protected:
     int  humanToSlash_revers() const;
     void itemSelector();
     void blink(const int position, bool present);
-    void slashedAnimation(const int dmg);
+    void zombieslashedAnimation(const int dmg);
     void zombieSelector();
     void choose(const int row, const int card);
     int  cardsInRow(const int row) const;
@@ -168,6 +171,6 @@ protected:
     bool isPlant(const char* name) const;
     bool isJob(const char* name) const;
 	void controlSignal(eControls controls) override;
-    void Draw(float fElapsedTime) override;
+    void Update(float fElapsedTime) override;
 	~GMGameMenu();
 };

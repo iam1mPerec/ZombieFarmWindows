@@ -20,6 +20,48 @@ void engine::begin() {
     Start();
 }
 
+void engine::startAnimation(int frames, float seconds_per_frame, std::function<void(int)> draw_func, std::function<void()> on_complete)
+{
+    currentAnimation.currentFrame = 0;
+    currentAnimation.totalFrames = frames;
+    currentAnimation.frameDuration = seconds_per_frame;
+    currentAnimation.accumulator = 0.0f;
+    currentAnimation.drawFrame = draw_func;
+	currentAnimation.onComplete = on_complete;
+}
+
+void engine::pause(float seconds, std::function<void()> onComplete)
+{
+	startAnimation(1, seconds, [](int) {}, onComplete);
+}
+
+void engine::playAnimation(float fElapseTime)
+{
+    if (currentAnimation.currentFrame == -1) return;
+    currentAnimation.accumulator += fElapseTime;
+    
+    if (currentAnimation.accumulator >= currentAnimation.frameDuration) {
+        currentAnimation.accumulator = 0;
+        currentAnimation.drawFrame(currentAnimation.currentFrame);
+        currentAnimation.currentFrame++;
+    }
+
+    if (currentAnimation.isComplete()) {
+        stopAnimation();
+        if (currentAnimation.onComplete) currentAnimation.onComplete();
+    }
+}
+
+void engine::stopAnimation()
+{
+	currentAnimation.currentFrame = -1;
+}
+
+void engine::setOnKeyPressed(std::function<void()> action)
+{
+	onKeyPressed = std::move(action);
+}
+
 void engine::setGameMode(GMBase* newGameMode) {
     if (m_mode) {
         delete m_mode;
@@ -33,20 +75,53 @@ bool engine::OnUserCreate() {
 
 bool engine::OnUserUpdate(float fElapsedTime) {
     //MARK: - Handle input
-    if (m_keys[VK_ACCEPT].bPressed || m_keys[L'F'].bPressed) m_mode->controlSignal(eControls::SUBMIT);
-    if (m_keys[VK_ESCAPE].bPressed || m_keys[L'E'].bPressed) m_mode->controlSignal(eControls::QUIT);
-    if (m_keys[VK_UP].bPressed || m_keys[L'W'].bPressed) m_mode->controlSignal(eControls::UP);
-    if (m_keys[VK_DOWN].bPressed || m_keys[L'S'].bPressed) m_mode->controlSignal(eControls::DOWN);
-    if (m_keys[VK_LEFT].bPressed || m_keys[L'A'].bPressed) m_mode->controlSignal(eControls::LEFT);
-    if (m_keys[VK_RIGHT].bPressed || m_keys[L'D'].bPressed) m_mode->controlSignal(eControls::RIGHT);
-    if (m_keys[VK_RIGHT].bPressed || m_keys[L'I'].bPressed) m_mode->controlSignal(eControls::INFO);
-    if (m_keys[VK_RIGHT].bPressed || m_keys[L'C'].bPressed) m_mode->controlSignal(eControls::CLEAR);
-	if (m_keys[VK_RIGHT].bPressed || m_keys[L'L'].bPressed) m_mode->controlSignal(eControls::SELL);
+	bool anyKeyPressed = false;
+    if (m_keys[VK_ACCEPT].bPressed || m_keys[L'F'].bPressed) { 
+        anyKeyPressed = true; 
+        m_mode->controlSignal(eControls::SUBMIT); }
+    if (m_keys[VK_ESCAPE].bPressed || m_keys[L'E'].bPressed) { 
+        anyKeyPressed = true; 
+        m_mode->controlSignal(eControls::QUIT);
+    }
+    if (m_keys[VK_UP].bPressed || m_keys[L'W'].bPressed) { 
+        anyKeyPressed = true; 
+        m_mode->controlSignal(eControls::UP);
+    }
+    if (m_keys[VK_DOWN].bPressed || m_keys[L'S'].bPressed) { 
+        anyKeyPressed = true; 
+        m_mode->controlSignal(eControls::DOWN);
+    }
+    if (m_keys[VK_LEFT].bPressed || m_keys[L'A'].bPressed) { 
+        anyKeyPressed = true; 
+        m_mode->controlSignal(eControls::LEFT);
+    }
+    if (m_keys[VK_RIGHT].bPressed || m_keys[L'D'].bPressed) {
+         anyKeyPressed = true; 
+         m_mode->controlSignal(eControls::RIGHT);
+    }
+    if (m_keys[L'I'].bPressed) {
+        anyKeyPressed = true; 
+        m_mode->controlSignal(eControls::INFO);
+    }
+    if (m_keys[L'C'].bPressed) {
+        anyKeyPressed = true; 
+        m_mode->controlSignal(eControls::CLEAR);
+    }
+	if (m_keys[L'L'].bPressed) {
+        anyKeyPressed = true; 
+        m_mode->controlSignal(eControls::SELL);
+    }
     
-    //MARK: - Update state
+    if (anyKeyPressed && onKeyPressed) {
+        onKeyPressed();
+		onKeyPressed = nullptr;
+	}
 
-    //MARK: - Render
-    m_mode->Draw(fElapsedTime);
+	//MARK: - Play animation
+    playAnimation(fElapsedTime);
+
+    //MARK: - Update and Render
+    m_mode->Update(fElapsedTime);
     
     return m_mode->inProgress();
 }

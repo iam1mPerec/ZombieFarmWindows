@@ -9,7 +9,7 @@ protected:
     char** screen;
 public:
     GMBase(engine* engine, char** screen);
-    virtual void Draw(float fElapsedTime) = 0;
+    virtual void Update(float fElapsedTime) = 0;
     bool inProgress() const;
 
     virtual void submit() {};
