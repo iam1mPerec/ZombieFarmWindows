@@ -52,6 +52,10 @@ void dialogBox::AddQuote(const char * quote)
     Box[1][10] = ']';
 }
 
+void dialogBox::AddQuote(const std::string& quote) {
+    AddQuote(quote.c_str());
+}
+
 void dialogBox::clearBox()
 {
     {

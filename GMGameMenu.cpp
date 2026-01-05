@@ -464,8 +464,8 @@ void GMGameMenu::manipulator_Attack(eControls controls)
         selectedZombie = 0;
         drawAll();
         drawUndead();
-        zombieSelector();
         side.setMenuOption(options::slashing);
+        zombieSelector();
     }
 
     if ((controls == eControls::SUBMIT) && side.getOption() == options::skills)
@@ -536,9 +536,8 @@ void GMGameMenu::scaterShot(const int DMG)
 
 void GMGameMenu::HumanSlashedAnimation(const int position)
 {
-	animationInProgress = true;
     drawAll();
-    m_engine->startAnimation(6, 0.1f, [=](int frame) {
+    m_engine->startAnimation(6, 0.1f, [this, position](int frame) {
         int row = position / 4;
         int card = position % 4;
         troops.getUnit(position)->blincking();
@@ -555,7 +554,6 @@ void GMGameMenu::HumanSlashedAnimation(const int position)
             {
                 screen[j + BottomPlank - 20 + row * 10][22 + card * 22] = ' ';
             }
-            print();
         }
         else if (frame % 2 == 0)
         {
@@ -593,6 +591,9 @@ void GMGameMenu::HumanSlashedAnimation(const int position)
                 }
             }
         }
+		clear();
+		drawAll();
+		drawUndead();
         print();
         }, [this, position] {
             int AttackerPos = horde.getAttackerPos();
@@ -608,10 +609,9 @@ void GMGameMenu::HumanSlashedAnimation(const int position)
             horde.getAttacker()->usedTurn();
             clear();
             drawUndead();
-            troops.getUnit(position)->fine();
             drawAll();
+            troops.getUnit(position)->fine();
             print();
-			animationInProgress = false;
         });
 }
 
@@ -627,7 +627,7 @@ void GMGameMenu::whosTurn()
                 zombie* Attacker = horde.getAttacker();
                 x1 = horde.getAttackerPos();
                 ZombiePirsAnimation();
-                horde.getAttacker()->bleedOut();
+                Attacker->bleedOut();
                 drawUndead();
                 if (horde.getAttacker() != Attacker)
                 {
@@ -638,51 +638,49 @@ void GMGameMenu::whosTurn()
             side.clear();
             showSide();
             print();
-            m_engine->pause(0.6f,[this]() {
-                if (horde.getAttacker() != nullptr)
+            m_engine->pause(1.0f,[this]() {
+                if (horde.getAttacker() == nullptr) return;
+                if (!horde.getAttacker()->getStun())
                 {
-                    if (!horde.getAttacker()->getStun())
+                    if (horde.getAttacker()->getType() == leaper)
                     {
-                        if (horde.getAttacker()->getType() == leaper)
-                        {
-                            HumanSlashedAnimation(humanToSlash_revers());
-                        }
-                        else if (horde.getAttacker()->getType() == basher)
-                        {
-                            x1 = horde.getAttackerPos();
-                            clear();
-                            drawUndead();
-                            drawAll();
-                            ZombieBuffAnimation();
-                            horde.getAttacker()->setAtk(-1);
-                            drawUndead();
-                            if (horde.getAttacker()->getAttack() <= 0)
-                            {
-                                horde.evolve(horde.getAttackerPos());
-                                drawUndead();
-                            }
-                            else
-                            {
-                                horde.getAttacker()->usedTurn();
-                            }
-                        }
-                        else
-                        {
-                            HumanSlashedAnimation(humanToSlash());
-                        }
-                        whosTurn();
+                        HumanSlashedAnimation(humanToSlash_revers());
                     }
-                    else
+                    else if (horde.getAttacker()->getType() == basher)
                     {
                         x1 = horde.getAttackerPos();
                         clear();
                         drawUndead();
                         drawAll();
-                        ZombieStunnedAnimation();
-                        horde.getAttacker()->stunedOut();
-                        horde.getAttacker()->usedTurn();
-                        whosTurn();
+                        ZombieBuffAnimation();
+                        horde.getAttacker()->setAtk(-1);
+                        drawUndead();
+                        if (horde.getAttacker()->getAttack() <= 0)
+                        {
+                            horde.evolve(horde.getAttackerPos());
+                            drawUndead();
+                        }
+                        else
+                        {
+                            horde.getAttacker()->usedTurn();
+                        }
                     }
+                    else
+                    {
+                        HumanSlashedAnimation(humanToSlash());
+                    }
+                    whosTurn();
+                }
+                else
+                {
+                    x1 = horde.getAttackerPos();
+                    clear();
+                    drawUndead();
+                    drawAll();
+                    ZombieStunnedAnimation();
+                    horde.getAttacker()->stunedOut();
+                    horde.getAttacker()->usedTurn();
+                    whosTurn();
                 }
                 });
         }
@@ -1301,11 +1299,14 @@ void GMGameMenu::zombieslashedAnimation(const int dmg)
         }
         print();
         }, [this, dmg] {
-            horde.getUnit(selectedZombie)->damage(troops.getAttacker()->getDamage());
+            horde.getUnit(selectedZombie)->damage(dmg);
             clear();
 			drawUndead();
             selector();
             print();
+            resetVariables();
+			selectedZombie = 0;
+            whosTurn();
         });
 }
 
@@ -4331,8 +4332,6 @@ void GMGameMenu::manipulator_Slashing(eControls controls)
     if (controls == eControls::SUBMIT)
     {
         attack();
-        resetVariables();
-        whosTurn();
         exit = true;
     }
 
@@ -5373,7 +5372,6 @@ GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
     store(wood),
     capture(false),
     usable(nullptr),
-    animationInProgress(true),
     GMBase(engine, screen)
 {
     resetVariables();

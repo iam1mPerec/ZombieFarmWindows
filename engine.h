@@ -21,6 +21,7 @@ class engine : public olcConsoleGameEngineOOP{
     //gameMode will tell the engine what to draw where and when
     //the engine would handle drawing and keyboard events
     class GMBase* m_mode;
+    bool locked;
 	Animation currentAnimation;
 	std::function<void()> onKeyPressed;
 public:
@@ -36,6 +37,7 @@ public:
     void setOnKeyPressed(std::function<void()>);
     void setGameMode(class GMBase* newGameMode);
     bool OnUserCreate() override;
+    bool isLocked() const;
     bool OnUserUpdate(float fElapsedTime) override;
     ~engine();
 };

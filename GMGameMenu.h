@@ -48,7 +48,6 @@ protected:
     bool selling;
     bool revive;
     bool NightRaid;
-	bool animationInProgress;
 
     events_list   list;
     field         MyField;

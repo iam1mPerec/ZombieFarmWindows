@@ -14,6 +14,7 @@ private:
 public:
     dialogBox();
     void AddQuote(const char* quote);
+    void AddQuote(const std::string& quote);
     void clearBox();
     int getPy() const;
     int getPx() const;

@@ -6,7 +6,8 @@ const int engine::consoleHeight = 52;
 const int engine::consoleWidth = 130;
 
 engine::engine() :
-    m_mode(nullptr)
+    m_mode(nullptr),
+	locked(false)
 {
 }
 void engine::begin() {
@@ -37,10 +38,14 @@ void engine::pause(float seconds, std::function<void()> onComplete)
 
 void engine::playAnimation(float fElapseTime)
 {
-    if (currentAnimation.currentFrame == -1) return;
+    if (currentAnimation.currentFrame == -1) {
+        locked = false;
+        return;
+    }
     currentAnimation.accumulator += fElapseTime;
     
     if (currentAnimation.accumulator >= currentAnimation.frameDuration) {
+		locked = true;
         currentAnimation.accumulator = 0;
         currentAnimation.currentFrame++;
         currentAnimation.drawFrame(currentAnimation.currentFrame);
@@ -73,49 +78,58 @@ bool engine::OnUserCreate() {
     return true;
 }
 
+bool engine::isLocked() const
+{
+    return locked; 
+}
+
 bool engine::OnUserUpdate(float fElapsedTime) {
     //MARK: - Handle input
 	bool anyKeyPressed = false;
-    if (m_keys[VK_ACCEPT].bPressed || m_keys[L'F'].bPressed) { 
-        anyKeyPressed = true; 
-        m_mode->controlSignal(eControls::SUBMIT); }
-    if (m_keys[VK_ESCAPE].bPressed || m_keys[L'E'].bPressed) { 
-        anyKeyPressed = true; 
-        m_mode->controlSignal(eControls::QUIT);
-    }
-    if (m_keys[VK_UP].bPressed || m_keys[L'W'].bPressed) { 
-        anyKeyPressed = true; 
-        m_mode->controlSignal(eControls::UP);
-    }
-    if (m_keys[VK_DOWN].bPressed || m_keys[L'S'].bPressed) { 
-        anyKeyPressed = true; 
-        m_mode->controlSignal(eControls::DOWN);
-    }
-    if (m_keys[VK_LEFT].bPressed || m_keys[L'A'].bPressed) { 
-        anyKeyPressed = true; 
-        m_mode->controlSignal(eControls::LEFT);
-    }
-    if (m_keys[VK_RIGHT].bPressed || m_keys[L'D'].bPressed) {
-         anyKeyPressed = true; 
-         m_mode->controlSignal(eControls::RIGHT);
-    }
-    if (m_keys[L'I'].bPressed) {
-        anyKeyPressed = true; 
-        m_mode->controlSignal(eControls::INFO);
-    }
-    if (m_keys[L'C'].bPressed) {
-        anyKeyPressed = true; 
-        m_mode->controlSignal(eControls::CLEAR);
-    }
-	if (m_keys[L'L'].bPressed) {
-        anyKeyPressed = true; 
-        m_mode->controlSignal(eControls::SELL);
+    if (!locked) {
+        if (m_keys[VK_ACCEPT].bPressed || m_keys[L'F'].bPressed) {
+            anyKeyPressed = true;
+            m_mode->controlSignal(eControls::SUBMIT);
+        }
+        if (m_keys[VK_ESCAPE].bPressed || m_keys[L'E'].bPressed) {
+            anyKeyPressed = true;
+            m_mode->controlSignal(eControls::QUIT);
+        }
+        if (m_keys[VK_UP].bPressed || m_keys[L'W'].bPressed) {
+            anyKeyPressed = true;
+            m_mode->controlSignal(eControls::UP);
+        }
+        if (m_keys[VK_DOWN].bPressed || m_keys[L'S'].bPressed) {
+            anyKeyPressed = true;
+            m_mode->controlSignal(eControls::DOWN);
+        }
+        if (m_keys[VK_LEFT].bPressed || m_keys[L'A'].bPressed) {
+            anyKeyPressed = true;
+            m_mode->controlSignal(eControls::LEFT);
+        }
+        if (m_keys[VK_RIGHT].bPressed || m_keys[L'D'].bPressed) {
+            anyKeyPressed = true;
+            m_mode->controlSignal(eControls::RIGHT);
+        }
+        if (m_keys[L'I'].bPressed) {
+            anyKeyPressed = true;
+            m_mode->controlSignal(eControls::INFO);
+        }
+        if (m_keys[L'C'].bPressed) {
+            anyKeyPressed = true;
+            m_mode->controlSignal(eControls::CLEAR);
+        }
+        if (m_keys[L'L'].bPressed) {
+            anyKeyPressed = true;
+            m_mode->controlSignal(eControls::SELL);
+        }
+
+        if (anyKeyPressed && onKeyPressed) {
+            onKeyPressed();
+            onKeyPressed = nullptr;
+        }
     }
     
-    if (anyKeyPressed && onKeyPressed) {
-        onKeyPressed();
-		onKeyPressed = nullptr;
-	}
 
 	//MARK: - Play animation
     playAnimation(fElapsedTime);
