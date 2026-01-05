@@ -18,7 +18,8 @@ public:
     virtual void down() {};
     virtual void left() {};
     virtual void right() {};
-	void clear();
-	void print();
+    virtual void showQuote(string quote);
+	virtual void clear();
+	virtual void print();
     virtual void controlSignal(eControls controls) {};
 };

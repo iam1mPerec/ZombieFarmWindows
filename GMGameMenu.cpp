@@ -537,11 +537,13 @@ void GMGameMenu::scaterShot(const int DMG)
 void GMGameMenu::HumanSlashedAnimation(const int position)
 {
     drawAll();
-    m_engine->startAnimation(6, 0.1f, [this, position](int frame) {
+    m_engine->startAnimation(6, 0.2f, [this, position](int frame) {
         int row = position / 4;
         int card = position % 4;
-        troops.getUnit(position)->blincking();
         if (frame == 1) {
+            troops.getUnit(position)->blincking();
+            drawAll();
+            print();
             for (int j = 0; j < 10; j++)
             {
                 for (int i = 0; i < 21; i++)
@@ -555,7 +557,7 @@ void GMGameMenu::HumanSlashedAnimation(const int position)
                 screen[j + BottomPlank - 20 + row * 10][22 + card * 22] = ' ';
             }
         }
-        else if (frame % 2 == 0)
+        else if (frame % 2 == 1)
         {
             for (int j = 0; j < 10; j++)
             {
@@ -591,9 +593,6 @@ void GMGameMenu::HumanSlashedAnimation(const int position)
                 }
             }
         }
-		clear();
-		drawAll();
-		drawUndead();
         print();
         }, [this, position] {
             int AttackerPos = horde.getAttackerPos();
@@ -612,6 +611,7 @@ void GMGameMenu::HumanSlashedAnimation(const int position)
             drawAll();
             troops.getUnit(position)->fine();
             print();
+            whosTurn();
         });
 }
 
@@ -659,17 +659,18 @@ void GMGameMenu::whosTurn()
                         {
                             horde.evolve(horde.getAttackerPos());
                             drawUndead();
+                            whosTurn();
                         }
                         else
                         {
                             horde.getAttacker()->usedTurn();
+							whosTurn();
                         }
                     }
                     else
                     {
                         HumanSlashedAnimation(humanToSlash());
                     }
-                    whosTurn();
                 }
                 else
                 {
@@ -3401,15 +3402,15 @@ void GMGameMenu::Zselector(const int position)
     {
         for (int j = 0; j < 10; j++)
         {
-            for (int i = 0; i < 11; i++)
+            for (int i = 0; i < 12; i++)
             {
                 if (selector[j][i] == '#')
                 {
-                    screen[5 + j][2 + i + position * 11] = char(6);
+                    screen[5 + j][1 + i + position * 11] = char(6);
                 }
                 else if (selector[j][i] == '$')
                 {
-                    screen[5 + j][2 + i + position * 11] = ' ';
+                    screen[5 + j][1 + i + position * 11] = ' ';
                 }
             }
         }
@@ -4277,6 +4278,12 @@ void GMGameMenu::splash(const int dmg, const int splash)
             drawUndead();
         }
     }
+}
+
+void GMGameMenu::showQuote(string quote)
+{
+	Dial.AddQuote(quote);
+    showDialog();
 }
 
 void GMGameMenu::manipulator_Slashing(eControls controls)

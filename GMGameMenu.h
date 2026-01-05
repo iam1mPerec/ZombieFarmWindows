@@ -109,6 +109,7 @@ protected:
     void hide();
     void attack();
     void splash(const int dmg, const int splash);
+	void showQuote(string quote) override;
     void drawInventory();
     void drawStats();
     void swapCards(const int y1, const int x1, const int y2, const int x2);

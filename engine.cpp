@@ -23,6 +23,7 @@ void engine::begin() {
 
 void engine::startAnimation(int frames, float seconds_per_frame, std::function<void(int)> draw_func, std::function<void()> on_complete)
 {
+    locked = true;
     currentAnimation.currentFrame = 0;
     currentAnimation.totalFrames = frames;
     currentAnimation.frameDuration = seconds_per_frame;
@@ -45,7 +46,6 @@ void engine::playAnimation(float fElapseTime)
     currentAnimation.accumulator += fElapseTime;
     
     if (currentAnimation.accumulator >= currentAnimation.frameDuration) {
-		locked = true;
         currentAnimation.accumulator = 0;
         currentAnimation.currentFrame++;
         currentAnimation.drawFrame(currentAnimation.currentFrame);
@@ -60,6 +60,7 @@ void engine::playAnimation(float fElapseTime)
 void engine::stopAnimation()
 {
 	currentAnimation.currentFrame = -1;
+    locked = false;
 }
 
 void engine::setOnKeyPressed(std::function<void()> action)

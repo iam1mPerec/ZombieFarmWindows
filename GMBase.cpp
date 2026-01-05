@@ -13,6 +13,10 @@ bool GMBase::inProgress() const {
     return m_inProgress;
 }
 
+void GMBase::showQuote(string quote)
+{
+}
+
 void GMBase::clear()
 {
 	for (int i = 1; i < x - 1; i++)
