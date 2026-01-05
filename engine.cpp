@@ -42,8 +42,8 @@ void engine::playAnimation(float fElapseTime)
     
     if (currentAnimation.accumulator >= currentAnimation.frameDuration) {
         currentAnimation.accumulator = 0;
-        currentAnimation.drawFrame(currentAnimation.currentFrame);
         currentAnimation.currentFrame++;
+        currentAnimation.drawFrame(currentAnimation.currentFrame);
     }
 
     if (currentAnimation.isComplete()) {

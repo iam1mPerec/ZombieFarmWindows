@@ -536,14 +536,13 @@ void GMGameMenu::scaterShot(const int DMG)
 
 void GMGameMenu::HumanSlashedAnimation(const int position)
 {
+	animationInProgress = true;
     drawAll();
-
-    print();
-    m_engine->startAnimation(8, 0.1f, [=](int frame) {
+    m_engine->startAnimation(6, 0.1f, [=](int frame) {
         int row = position / 4;
         int card = position % 4;
         troops.getUnit(position)->blincking();
-        if (frame == 0) {
+        if (frame == 1) {
             for (int j = 0; j < 10; j++)
             {
                 for (int i = 0; i < 21; i++)
@@ -577,7 +576,7 @@ void GMGameMenu::HumanSlashedAnimation(const int position)
             }
         }
 
-        else if (frame % 2 != 0)
+        else
         {
             for (int j = 0; j < 10; j++)
             {
@@ -607,13 +606,12 @@ void GMGameMenu::HumanSlashedAnimation(const int position)
             }
 
             horde.getAttacker()->usedTurn();
-
             clear();
-            drawAll();
             drawUndead();
             troops.getUnit(position)->fine();
             drawAll();
             print();
+			animationInProgress = false;
         });
 }
 
@@ -641,7 +639,7 @@ void GMGameMenu::whosTurn()
             showSide();
             print();
             m_engine->pause(0.6f,[this]() {
-                if (horde.getAttacker())
+                if (horde.getAttacker() != nullptr)
                 {
                     if (!horde.getAttacker()->getStun())
                     {
@@ -1254,7 +1252,7 @@ void GMGameMenu::zombieslashedAnimation(const int dmg)
         [this](int frame) {
 		int ROWS = 10;
 		int COLS = 11;
-        if (frame == 0) {
+        if (frame == 1) {
             for (int j = 0; j < ROWS; j++)
             {
                 for (int i = 0; i < COLS-1; i++)
@@ -1269,7 +1267,7 @@ void GMGameMenu::zombieslashedAnimation(const int dmg)
                     screen[5 + j][11 + i + selectedZombie * 11] = ' ';
                 }
             }
-        } else if (frame % 2 == 0) {
+        } else if (frame % 2 == 1) {
             for (int j = 0; j < ROWS; j++)
             {
                 for (int i = 0; i < COLS-1; i++)
@@ -1307,7 +1305,7 @@ void GMGameMenu::zombieslashedAnimation(const int dmg)
             clear();
 			drawUndead();
             selector();
-			print();
+            print();
         });
 }
 
@@ -2411,8 +2409,9 @@ void GMGameMenu::functional()
     {
         drawAll();
     }
-    if (GlobalTime.getSec() % 30 == 0)
+    if (GlobalTime.getSec() % 6 == 0 && farmerShownAt != GlobalTime.getSec())
     {
+		farmerShownAt = GlobalTime.getSec();
         farmerAnimation.show();
     }
     showDialog();
@@ -4431,7 +4430,6 @@ void GMGameMenu::manipulator_Bombing(eControls controls)
 void GMGameMenu::healingAnimation()
 {
     m_engine->startAnimation(16, 0.1, [this](int frame) {
-        int count = 16 - frame;
         char buff[16][20] =
         {
             "+     +        +   ",
@@ -4471,38 +4469,35 @@ void GMGameMenu::healingAnimation()
             }
         }
 
-        while (count < 16)
+        for (int j = 0; j < 8; j++)
         {
-            for (int j = 0; j < 8; j++)
+            for (int i = 0; i < 19; i++)
             {
-                for (int i = 0; i < 19; i++)
+                if (j + frame % 17 >= 16)
                 {
-                    if (j + count % 17 >= 16)
-                    {
-                        CharOut(buff[(j + count - 8) % 17][i], j + BottomPlank + y1 * 10 - 19, i + x1 * 22 + 3);
-                    }
-                    else
-                    {
-                        CharOut(buff[(j + count) % 17][i], j + BottomPlank + y1 * 10 - 19, i + x1 * 22 + 3);
-                    }
+                    CharOut(buff[(j + frame - 9) % 17][i], j + BottomPlank + y1 * 10 - 19, i + x1 * 22 + 3);
+                }
+                else
+                {
+                    CharOut(buff[(j + frame - 1) % 17][i], j + BottomPlank + y1 * 10 - 19, i + x1 * 22 + 3);
                 }
             }
-            for (int j = 0; j < 4; j++)
-            {
-                for (int i = 0; i < 19; i++)
-                {
-                    if (front[j][i] == '*')
-                    {
-                        CharOut(' ', j + BottomPlank + y1 * 10 - 18, i + x1 * 22 + 3);
-                    }
-                    else if (front[j][i] != ' ')
-                    {
-                        CharOut(front[j][i], j + BottomPlank + y1 * 10 - 18, i + x1 * 22 + 3);
-                    }
-                }
-            }
-            print();
         }
+        for (int j = 0; j < 4; j++)
+        {
+            for (int i = 0; i < 19; i++)
+            {
+                if (front[j][i] == '*')
+                {
+                    CharOut(' ', j + BottomPlank + y1 * 10 - 18, i + x1 * 22 + 3);
+                }
+                else if (front[j][i] != ' ')
+                {
+                    CharOut(front[j][i], j + BottomPlank + y1 * 10 - 18, i + x1 * 22 + 3);
+                }
+            }
+        }
+        print();
         }, [this]{
 			drawAll();
     });
@@ -4550,7 +4545,6 @@ void GMGameMenu::massHealAnimation()
 {
     m_engine->startAnimation(
         16, 0.1f, [this](int frame) {
-			int count = 16 - frame;
             char buff[16][20] =
             {
                 "+     +        +   ",
@@ -4602,13 +4596,13 @@ void GMGameMenu::massHealAnimation()
                         x = k % 4;
                         if (troops.getUnit(k)->getType() && troops.getUnit(k)->IsAlive())
                         {
-                            if (j + count % 17 >= 16)
+                            if (j + (frame - 1) % 17 >= 16)
                             {
-                                CharOut(buff[(j + count - 8) % 17][i], j + BottomPlank + y * 10 - 19, i + x * 22 + 3);
+                                CharOut(buff[(j + frame - 9) % 17][i], j + BottomPlank + y * 10 - 19, i + x * 22 + 3);
                             }
                             else
                             {
-                                CharOut(buff[(j + count) % 17][i], j + BottomPlank + y * 10 - 19, i + x * 22 + 3);
+                                CharOut(buff[(j + frame - 1) % 17][i], j + BottomPlank + y * 10 - 19, i + x * 22 + 3);
                             }
                         }
                     }
@@ -5362,6 +5356,8 @@ void GMGameMenu::reveal()
 GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
     MyField(screen),
     NightRaid(0),
+    farmerShownAt(0),
+    blinkedAt(0),
     farmerAnimation(screen, MyField, list, Res, Dial),
     stock(Dial),
     plant(potato),
@@ -5377,6 +5373,7 @@ GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
     store(wood),
     capture(false),
     usable(nullptr),
+    animationInProgress(true),
     GMBase(engine, screen)
 {
     resetVariables();
@@ -6327,8 +6324,9 @@ void GMGameMenu::showTime()
     CharOut(GlobalTime.getDay() / 10, 2, SidePlank + 7);
     CharOut(GlobalTime.getDay() % 10, 2, SidePlank + 8);
 
-    if ((GlobalTime.getSec() % 30 == 0) && (side.getMenuOption() == options::battle))
+    if ((GlobalTime.getSec() % 30 == 0) && (side.getMenuOption() == options::battle) && (GlobalTime.getSec() != blinkedAt))
     {
+		blinkedAt = GlobalTime.getSec();
         troops.blincker();
     }
 

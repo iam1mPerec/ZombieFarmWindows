@@ -32,6 +32,8 @@ class GMGameMenu :
     public GMBase
 {
 protected:
+    int farmerShownAt;
+	int blinkedAt;
     int SidePlank;
     int BottomPlank;
     int selectedZombie;
@@ -46,6 +48,7 @@ protected:
     bool selling;
     bool revive;
     bool NightRaid;
+	bool animationInProgress;
 
     events_list   list;
     field         MyField;

@@ -112,12 +112,9 @@ void Horde::deleteWave()
 
 zombie* Horde::getAttacker() const
 {
-    if (getAttackerPos() != -1)
-    {
-        return getUnit(getAttackerPos());
-    }
-
-    return nullptr;
+	if (getAttackerPos() == -1) return nullptr;
+    
+    return getUnit(getAttackerPos());
 }
 
 int Horde::getAttackerPos() const

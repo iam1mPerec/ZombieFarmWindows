@@ -3,5 +3,5 @@
 int main()
 {
     engine engine;
-    engine.begin(); 
+    engine.begin();
 }

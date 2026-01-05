@@ -1,10 +1,11 @@
 #include "ptime.h"
 
 ptime::ptime(int pD, int pH, int pM):
-pSec(0),
-pMin(pM),
-pHour(pH),
-pDay(pD)
+    accumulator(0.0f),
+    pSec(0),
+    pMin(pM),
+    pHour(pH),
+    pDay(pD)
 {
     if(pM>60||pM<0)
     {
@@ -71,7 +72,12 @@ void ptime::checkDTime()
 }
 void ptime::fly(float fElapsedTime)
 {
-    pSec += 60 *fElapsedTime;
+	accumulator += fElapsedTime;
+    if(accumulator >= 0.1f)
+    {
+		pSec +=3;
+        accumulator -= 0.1f;
+	}
     if (pSec >= 60)
     {
         pSec = 0;
