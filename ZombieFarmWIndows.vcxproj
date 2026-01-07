@@ -195,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Abilities.h" />
+    <ClInclude Include="eSwitchTo.h" />
     <ClInclude Include="farmerAnimation.h" />
     <ClInclude Include="BadList.h" />
     <ClInclude Include="bandages.h" />

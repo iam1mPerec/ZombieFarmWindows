@@ -27,6 +27,7 @@
 #include "ItemLoader.h"
 #include "GMBase.h"
 #include "eControls.h"
+#include "eSwitchTo.h"
 
 class GMGameMenu :
     public GMBase
@@ -74,17 +75,17 @@ protected:
 
     GMGameMenu(bool Loading, engine* engine, char** screen);
     
-    void ZombieStunnedAnimation();
-    void ZombieCritAnimation();
-    void ZombiePirsAnimation();
+    void ZombieStunnedAnimation(const int stunedFor);
+    void ZombieCritAnimation(const int crit);
+    void ZombiePirsAnimation(const bool setBleeding, const int dmg = 0);
     void ZombieBuffAnimation();
     void ZombieBiteAninmation();
     void healingAnimation();
     void massHealAnimation();
     void scaterShotAnimation(const int DMG);
     
-    void PopUpAnimation(int frame);
-    void zombieslashedAnimation(const int dmg);
+    void PopUpAnimation(const int frame);
+    void zombieSlashedAnimation(const int dmg);
     void HumanSlashedAnimation(const int position);
     
     void drawFinalWinScreen();
@@ -103,9 +104,10 @@ protected:
     void mapResources();
     void functional();
     void heal();
-    void stun();
-    void crit();
-    void pirs();
+    void stun(const int stun);
+    void crit(const int crit);
+    void pirs(const int pirs);
+    void slash(const int dmg);
     void massHeal(const int factor);
     void massExp(const int factor);
     void equip(item* item, char* name, unit* unit, bool& exit);
@@ -114,7 +116,7 @@ protected:
     void load();
     void clear();
     void hide();
-    void attack();
+    void attack(eSwitchTo switchTo = eSwitchTo::crit);
     void splash(const int dmg, const int splash);
     void drawInventory();
     void drawStats();
@@ -126,7 +128,6 @@ protected:
     void addUnit();
     void drawAll();
     void drawUndead();
-    void massAttack(const int Dmg);
     void whosTurn();
     void drawDescription();
     void setUndead();

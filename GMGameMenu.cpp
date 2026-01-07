@@ -210,9 +210,6 @@ void GMGameMenu::manipulator_Abilities(eControls controls)
         if (troops.getAttacker()->getAbility(4))
         {
             massHealAnimation();
-            massHeal(troops.getAttacker()->getAbility(4) * 50);
-            troops.getAttacker()->usedTurn();
-            whosTurn();
         }
     }
 
@@ -640,14 +637,8 @@ void GMGameMenu::whosTurn()
             if (horde.getAttacker()->getBleed())
             {
                 zombie* Attacker = horde.getAttacker();
-                x1 = horde.getAttackerPos();
-                ZombiePirsAnimation();
-                Attacker->bleedOut();
-                drawUndead();
-                if (horde.getAttacker() != Attacker)
-                {
-                    whosTurn();
-                }
+                selectedZombie = horde.getAttackerPos();
+                ZombiePirsAnimation(false);
             }
             Zselector(horde.getAttackerPos());
             side.clear();
@@ -663,7 +654,7 @@ void GMGameMenu::whosTurn()
                     }
                     else if (horde.getAttacker()->getType() == basher)
                     {
-                        x1 = horde.getAttackerPos();
+                        selectedZombie = horde.getAttackerPos();
                         clear();
                         drawUndead();
                         drawAll();
@@ -689,14 +680,11 @@ void GMGameMenu::whosTurn()
                 }
                 else
                 {
-                    x1 = horde.getAttackerPos();
+                    selectedZombie = horde.getAttackerPos();
                     clear();
                     drawUndead();
                     drawAll();
-                    ZombieStunnedAnimation();
-                    horde.getAttacker()->stunedOut();
-                    horde.getAttacker()->usedTurn();
-                    whosTurn();
+                    ZombieStunnedAnimation(0);
                 }
                 });
         }
@@ -738,7 +726,7 @@ void GMGameMenu::whosTurn()
     }
 }
 
-void GMGameMenu::PopUpAnimation(int frame)
+void GMGameMenu::PopUpAnimation(const int frame)
 {
     const int ROWS = 29;
     const int COLS = 70;
@@ -1197,7 +1185,7 @@ int GMGameMenu::humanToSlash() const
     }
 }
 
-void GMGameMenu::zombieslashedAnimation(const int dmg)
+void GMGameMenu::zombieSlashedAnimation(const int dmg)
 {
     m_engine->startAnimation(
         8,
@@ -1255,6 +1243,8 @@ void GMGameMenu::zombieslashedAnimation(const int dmg)
         print();
         }, [this, dmg] {
             horde.getUnit(selectedZombie)->damage(dmg);
+			troops.getAttacker()->usedTurn();
+            side.setMenuOption(options::attacking);
             clear();
 			drawUndead();
             selector();
@@ -2148,9 +2138,9 @@ void GMGameMenu::drawStats()
 
 }
 
-void GMGameMenu::ZombieCritAnimation()
+void GMGameMenu::ZombieCritAnimation(const int crit)
 {
-    m_engine->startAnimation(10, 0.1,[this](int frame, int totalFrames) {
+    m_engine->startAnimation(10, 0.1,[=](int frame, int totalFrames) {
         char buff[7][9] = {};
         if (frame % 2 == 0)
         {
@@ -2179,21 +2169,25 @@ void GMGameMenu::ZombieCritAnimation()
             {
                 if (buff[j][i] == '$')
                 {
-                    CharOut('\\', j + 7, i + 3 + x1 * 11);
+                    CharOut('\\', j + 7, i + 3 + selectedZombie * 11);
                 }
                 else
                 {
-                    CharOut(buff[j][i], j + 7, i + 3 + x1 * 11);
+                    CharOut(buff[j][i], j + 7, i + 3 + selectedZombie * 11);
                 }
             }
         }
 	    print();
+        }, [=] {
+            horde.getUnit(selectedZombie)->damage(crit);
+			attack(eSwitchTo::stun);
     });
 }
 
-void GMGameMenu::ZombieStunnedAnimation()
+void GMGameMenu::ZombieStunnedAnimation(const int stunedFor)
 {
-    m_engine->startAnimation(16, 0.1,[this](int frame, int totalFrames) {
+    m_engine->startAnimation(16, 0.1f,[this](int frame, int totalFrames) {
+        drawUndead();
         char buff[4][9] = {};
         if (frame % 8 == 0)
         {
@@ -2251,17 +2245,30 @@ void GMGameMenu::ZombieStunnedAnimation()
             {
                 if (buff[j][i] == '$')
                 {
-                    CharOut('\\', j + 7, i + 3 + x1 * 11);
+                    CharOut('\\', j + 7, i + 3 + selectedZombie * 11);
                 }
                 else
                 {
-                    CharOut(buff[j][i], j + 7, i + 3 + x1 * 11);
+                    CharOut(buff[j][i], j + 7, i + 3 + selectedZombie * 11);
                 }
             }
         }
         print();
-		});
-        drawUndead();
+        }, [=] {
+            if (troops.getAttacker() != nullptr && stunedFor != 0) {
+                horde.getUnit(selectedZombie)->setStunned(stunedFor);
+                drawUndead();
+                attack(eSwitchTo::pirs);
+            }
+            else {
+                if (horde.exists(selectedZombie)) {
+                horde.getAttacker()->stunedOut();
+                horde.getAttacker()->usedTurn();
+                }
+                drawUndead();
+                whosTurn();
+            }
+        });
 }
 
 void GMGameMenu::drawDescription()
@@ -4184,34 +4191,33 @@ void GMGameMenu::splash(const int dmg, const int splash)
 {
     if (splash)
     {
-        if (horde.exists(x1 - 1) || horde.exists(x1 + 1))
+        if (horde.exists(selectedZombie - 1) || horde.exists(selectedZombie + 1))
         {
-                //TODO check and continue from here
-            m_engine->startAnimation(8, 0.13f, [this, dmg, splash](int frame, int totalFrames) 
+            m_engine->startAnimation(8, 0.13f, [=](int frame, int totalFrames) 
             {
-                if (horde.exists(x1 - 1))
+                if (horde.exists(selectedZombie - 1))
                 {
-                    blink(x1 - 1, (8-frame) % 2);
+                    blink(selectedZombie - 1, (8-frame) % 2);
                 }
-                if (horde.exists(x1 + 1))
+                if (horde.exists(selectedZombie + 1))
                 {
-                    blink(x1 + 1, (8-frame) % 2);
+                    blink(selectedZombie + 1, (8-frame) % 2);
                 }
                 print();
-            }, [&] 
+            }, [=] 
             {
                 int s = (dmg * splash) / 100;
 
-                if (horde.exists(x1 - 1))
+                if (horde.exists(selectedZombie - 1))
                 {
-                    horde.getUnit(x1 - 1)->damage(s);
+                    horde.getUnit(selectedZombie - 1)->damage(s);
                 }
-                if (horde.exists(x1 + 1))
+                if (horde.exists(selectedZombie + 1))
                 {
-                    horde.getUnit(x1 + 1)->damage(s);
+                    horde.getUnit(selectedZombie + 1)->damage(s);
                 }
                 drawUndead();
-
+                attack(eSwitchTo::slash);
             });
 
         }
@@ -4276,8 +4282,8 @@ void GMGameMenu::manipulator_Slashing(eControls controls)
 
     if (controls == eControls::SUBMIT)
     {
-        attack();
-        exit = true;
+        attack(eSwitchTo::crit);
+		exit = true;
     }
 
     drawUndead();
@@ -4347,7 +4353,7 @@ void GMGameMenu::manipulator_Bombing(eControls controls)
         drawUndead();
         selector();
         usable->consume();
-        zombieslashedAnimation(usable->getProperty());
+        zombieSlashedAnimation(usable->getProperty());
         splash(usable->getProperty(), 50);
         troops.getAttacker()->usedTurn();
         side.setMenuOption(attacking);
@@ -4457,27 +4463,27 @@ void GMGameMenu::ZombieBiteAninmation()
             " \\/\\/\\/ ",
             "  /\\/\\  "
         };
-        int x1 = horde.getAttackerPos();
+        int selectedZombie = horde.getAttackerPos();
         for (int j = 0; j < 8; j++)
         {
             for (int i = 0; i < 8; i++)
             {
-                CharOut(' ', j + 6, i + 3 + x1 * 11);
+                CharOut(' ', j + 6, i + 3 + selectedZombie * 11);
                 if (count % 2 == 0 && j == 3)
                 {
-                    CharOut(front[0][i], j + 6, i + 3 + x1 * 11);
+                    CharOut(front[0][i], j + 6, i + 3 + selectedZombie * 11);
                 }
                 else if (count % 2 == 0 && j == 4)
                 {
-                    CharOut(front[1][i], j + 6, i + 3 + x1 * 11);
+                    CharOut(front[1][i], j + 6, i + 3 + selectedZombie * 11);
                 }
                 if (count % 2 == 1 && j == 2)
                 {
-                    CharOut(front[0][i], j + 6, i + 3 + x1 * 11);
+                    CharOut(front[0][i], j + 6, i + 3 + selectedZombie * 11);
                 }
                 else if (count % 2 == 1 && j == 5)
                 {
-                    CharOut(front[1][i], j + 6, i + 3 + x1 * 11);
+                    CharOut(front[1][i], j + 6, i + 3 + selectedZombie * 11);
                 }
             }
         }
@@ -4576,13 +4582,16 @@ void GMGameMenu::massHealAnimation()
             }
 			print();
         }, [this] {
+            massHeal(troops.getAttacker()->getAbility(4) * 50);
+            troops.getAttacker()->usedTurn();
+            whosTurn();
 			drawAll();
         });
 }
 
-void GMGameMenu::ZombiePirsAnimation()
+void GMGameMenu::ZombiePirsAnimation(const bool setBleeding, const int dmg)
 {
-    m_engine->startAnimation(16, 0.1f, [this] (int frame, int totalFrames) {
+    m_engine->startAnimation(16, 0.1f, [=] (int frame, int totalFrames) {
         int count = 16 - frame;
         char buff[8][9] =
         {
@@ -4608,11 +4617,11 @@ void GMGameMenu::ZombiePirsAnimation()
             {
                 if (j - count % 9 < 0)
                 {
-                    CharOut(buff[j - count % 9 + 8][i], j + 6, i + 3 + x1 * 11);
+                    CharOut(buff[j - count % 9 + 8][i], j + 6, i + 3 + selectedZombie * 11);
                 }
                 else
                 {
-                    CharOut(buff[j - count % 9][i], j + 6, i + 3 + x1 * 11);
+                    CharOut(buff[j - count % 9][i], j + 6, i + 3 + selectedZombie * 11);
                 }
             }
         }
@@ -4623,14 +4632,28 @@ void GMGameMenu::ZombiePirsAnimation()
             {
                 if (front[j][i] != ' ')
                 {
-                    CharOut(front[j][i], j + 8, i + 3 + x1 * 11);
+                    CharOut(front[j][i], j + 8, i + 3 + selectedZombie * 11);
                 }
             }
         }
-        count++;
-        Sleep(100);
-        print();
-
+		drawUndead();
+       
+    }, [=] {
+        drawUndead();
+        
+        if (troops.getAttacker() != nullptr && setBleeding) {
+            horde.getUnit(selectedZombie)->setBleeding(3, dmg);
+            attack(eSwitchTo::splash);
+        }
+        else if (horde.exists(selectedZombie))
+        {
+            horde.getAttacker()->bleedOut();
+            drawUndead();
+            if (horde.getAttacker() == nullptr)
+            {
+                whosTurn();
+            }
+        }
     });
 }
 
@@ -4657,64 +4680,61 @@ void GMGameMenu::ZombieBuffAnimation()
     });
 }
 
-void GMGameMenu::stun()
+void GMGameMenu::stun(const int stun)
 {
-    int stunned = troops.getAttacker()->getStuned();
-    if (horde.exists(x1))
-    {
-        if (stunned)
-        {
-            ZombieStunnedAnimation();
-            horde.getUnit(x1)->setStunned(stunned);
-        }
-    }
-    drawUndead();
+    ZombieStunnedAnimation(stun);
 }
 
-void GMGameMenu::pirs()
+void GMGameMenu::pirs(const int pirs)
 {
-    int pirs = troops.getAttacker()->getPirs();
-    if (pirs)
-    {
-        if (horde.exists(x1))
-        {
-            if (pirs * 3 > horde.getUnit(x1)->getBleedDmg())
-            {
-                ZombiePirsAnimation();
-                horde.getUnit(x1)->setBleeding(3, pirs);
-            }
-        }
-    }
-    drawUndead();
+    ZombiePirsAnimation(true);
 }
 
-void GMGameMenu::crit()
+void GMGameMenu::slash(const int dmg)
 {
-    int crit = (troops.getAttacker()->getCrited()) * (troops.getAttacker()->getDamage()) / 100;
-    if (crit)
-    {
-        ZombieCritAnimation();
-        horde.getUnit(x1)->damage(crit);
-    }
-    else
-    {
-        zombieslashedAnimation(troops.getAttacker()->getDamage());
-    }
-    drawUndead();
+	zombieSlashedAnimation(dmg);
 }
 
-void GMGameMenu::attack()
+void GMGameMenu::crit(const int crit)
+{
+    int critDmg = crit * (troops.getAttacker()->getDamage()) / 100;
+    ZombieCritAnimation(critDmg);
+}
+
+void GMGameMenu::attack(eSwitchTo switchTo)
 {
     clear();
     drawAll();
     drawUndead();
     selector();
-    crit();
-    stun();
-    pirs();
-    splash(troops.getAttacker()->getDamage(), troops.getAttacker()->getSplash());
-    troops.getAttacker()->usedTurn();
-    side.setMenuOption(attacking);
+
+	int CRIT, STUN, PIRS, SPLASH, DMG;
+
+    switch (switchTo) {
+        case eSwitchTo::crit:
+            CRIT = troops.getAttacker()->getCrited();
+            if (CRIT) return crit(CRIT);
+            [[fallthrough]];
+        
+        case eSwitchTo::stun:
+            STUN = troops.getAttacker()->getStuned();
+            if (STUN) return stun(STUN);
+            [[fallthrough]];
+
+        case eSwitchTo::pirs:
+            PIRS = troops.getAttacker()->getPirs();
+            if (PIRS) return pirs(PIRS);
+            [[fallthrough]];
+
+        case eSwitchTo::splash:
+            SPLASH = troops.getAttacker()->getSplash();
+            DMG = troops.getAttacker()->getDamage();
+            if (SPLASH) return splash(DMG, SPLASH);
+            [[fallthrough]];
+
+        default:
+            slash(troops.getAttacker()->getDamage());
+    }
 }
 
 void GMGameMenu::massHeal(const int factor)
