@@ -71,34 +71,40 @@ protected:
 
     public:
     static ptime GlobalTime;
+
     GMGameMenu(bool Loading, engine* engine, char** screen);
-    void showWaves();
-    void deleteWaves();
-    void show();
-    void seeder();
+    
     void ZombieStunnedAnimation();
     void ZombieCritAnimation();
     void ZombiePirsAnimation();
     void ZombieBuffAnimation();
     void ZombieBiteAninmation();
     void healingAnimation();
+    void PopUpAnimation(int frame);
+    void massHealAnimation();
+    void zombieslashedAnimation(const int dmg);
+    void HumanSlashedAnimation(const int position);
+    
     void drawFinalWinScreen();
     void drawFinalloseScreen();
+    void drawFinalInfoScreen();
+    void drawFinalPopup(char popup[29][70]);
+    
+    void showWaves();
+    void seeder();
+    void deleteWaves();
+    void show();
     void showTime();
     void showSide();
     int  checkSpase();
     void showDialog();
     void mapResources();
-    void PopUpAnimation(int frame);
-    void drawFinalPopup(char popup[29][70]);
-    void drawFinalInfoScreen();
     void functional();
     void scaterShot(const int DMG);
     void heal();
     void stun();
     void crit();
     void pirs();
-    void massHealAnimation();
     void massHeal(const int factor);
     void massExp(const int factor);
     void equip(item* item, char* name, unit* unit, bool& exit);
@@ -109,7 +115,6 @@ protected:
     void hide();
     void attack();
     void splash(const int dmg, const int splash);
-	void showQuote(string quote) override;
     void drawInventory();
     void drawStats();
     void swapCards(const int y1, const int x1, const int y2, const int x2);
@@ -129,7 +134,6 @@ protected:
     int  humanToSlash_revers() const;
     void itemSelector();
     void blink(const int position, bool present);
-    void zombieslashedAnimation(const int dmg);
     void zombieSelector();
     void choose(const int row, const int card);
     int  cardsInRow(const int row) const;
@@ -145,9 +149,13 @@ protected:
     void Zselector(const int position);
     void choosing2lvl(const int x2);
     void manipulator_Main(eControls controls);
-    void HumanSlashedAnimation(const int position);
     void resetVariables();
     void resetTurns();
+    void traiding(const int num);
+    bool isBuilding(const char* name) const;
+    bool isPlant(const char* name) const;
+    bool isJob(const char* name) const;
+    
     void manipulator_equip(eControls controls);
     void manipulator_Plants(eControls controls);
     void manipulator_Building(eControls controls);
@@ -169,11 +177,10 @@ protected:
     void manipulator_Slashing(eControls controls);
     void manipulator_Inventory(eControls controls);
     void manipulator_Bombing(eControls controls);
-    void traiding(const int num);
-    bool isBuilding(const char* name) const;
-    bool isPlant(const char* name) const;
-    bool isJob(const char* name) const;
+    
+	void showQuote(string quote) override;
 	void controlSignal(eControls controls) override;
     void Update(float fElapsedTime) override;
-	~GMGameMenu();
+	
+    ~GMGameMenu();
 };

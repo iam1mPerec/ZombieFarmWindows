@@ -21,7 +21,7 @@ void engine::begin() {
     Start();
 }
 
-void engine::startAnimation(int frames, float seconds_per_frame, std::function<void(int)> draw_func, std::function<void()> on_complete)
+void engine::startAnimation(int frames, float seconds_per_frame, std::function<void(int, int)> draw_func, std::function<void()> on_complete)
 {
     locked = true;
     currentAnimation.currentFrame = 0;
@@ -34,7 +34,7 @@ void engine::startAnimation(int frames, float seconds_per_frame, std::function<v
 
 void engine::pause(float seconds, std::function<void()> onComplete)
 {
-	startAnimation(1, seconds, [](int) {}, onComplete);
+	startAnimation(1, seconds, [](int, int) {}, onComplete);
 }
 
 void engine::playAnimation(float fElapseTime)
@@ -48,7 +48,7 @@ void engine::playAnimation(float fElapseTime)
     if (currentAnimation.accumulator >= currentAnimation.frameDuration) {
         currentAnimation.accumulator = 0;
         currentAnimation.currentFrame++;
-        currentAnimation.drawFrame(currentAnimation.currentFrame);
+        currentAnimation.drawFrame(currentAnimation.currentFrame, currentAnimation.totalFrames);
     }
 
     if (currentAnimation.isComplete()) {
@@ -65,7 +65,7 @@ void engine::stopAnimation()
 
 void engine::setOnKeyPressed(std::function<void()> action)
 {
-	onKeyPressed = std::move(action);
+    onKeyPressed = action;
 }
 
 void engine::setGameMode(GMBase* newGameMode) {
@@ -84,50 +84,52 @@ bool engine::isLocked() const
     return locked; 
 }
 
+void engine::signalKeyPressed()
+{
+    if (onKeyPressed != nullptr && !locked) {
+        onKeyPressed();
+        onKeyPressed = nullptr;
+    }
+}
+
 bool engine::OnUserUpdate(float fElapsedTime) {
     //MARK: - Handle input
-	bool anyKeyPressed = false;
     if (!locked) {
         if (m_keys[VK_ACCEPT].bPressed || m_keys[L'F'].bPressed) {
-            anyKeyPressed = true;
+            signalKeyPressed();
             m_mode->controlSignal(eControls::SUBMIT);
         }
         if (m_keys[VK_ESCAPE].bPressed || m_keys[L'E'].bPressed) {
-            anyKeyPressed = true;
+            signalKeyPressed();
             m_mode->controlSignal(eControls::QUIT);
         }
         if (m_keys[VK_UP].bPressed || m_keys[L'W'].bPressed) {
-            anyKeyPressed = true;
+            signalKeyPressed();
             m_mode->controlSignal(eControls::UP);
         }
         if (m_keys[VK_DOWN].bPressed || m_keys[L'S'].bPressed) {
-            anyKeyPressed = true;
+            signalKeyPressed();
             m_mode->controlSignal(eControls::DOWN);
         }
         if (m_keys[VK_LEFT].bPressed || m_keys[L'A'].bPressed) {
-            anyKeyPressed = true;
+            signalKeyPressed();
             m_mode->controlSignal(eControls::LEFT);
         }
         if (m_keys[VK_RIGHT].bPressed || m_keys[L'D'].bPressed) {
-            anyKeyPressed = true;
+            signalKeyPressed();
             m_mode->controlSignal(eControls::RIGHT);
         }
         if (m_keys[L'I'].bPressed) {
-            anyKeyPressed = true;
+            signalKeyPressed();
             m_mode->controlSignal(eControls::INFO);
         }
         if (m_keys[L'C'].bPressed) {
-            anyKeyPressed = true;
+            signalKeyPressed();
             m_mode->controlSignal(eControls::CLEAR);
         }
         if (m_keys[L'L'].bPressed) {
-            anyKeyPressed = true;
+            signalKeyPressed();
             m_mode->controlSignal(eControls::SELL);
-        }
-
-        if (anyKeyPressed && onKeyPressed) {
-            onKeyPressed();
-            onKeyPressed = nullptr;
         }
     }
     

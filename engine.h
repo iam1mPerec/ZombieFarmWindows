@@ -8,7 +8,7 @@ struct Animation {
     int totalFrames = 0;
     float frameDuration = 0.0f;
     float accumulator = 0.0f;
-    std::function<void(int)> drawFrame;
+    std::function<void(int, int)> drawFrame;
     std::function<void()> onComplete;
 
     bool isComplete() const {
@@ -30,7 +30,7 @@ public:
 
     engine();
     void begin();
-    void startAnimation(int frames, float secondsPerFrame, std::function<void(int)> drawFunc, std::function<void()> onComplete = nullptr);
+    void startAnimation(int frames, float secondsPerFrame, std::function<void(int, int)> drawFunc, std::function<void()> onComplete = nullptr);
     void pause(float seconds, std::function<void()> onComplete);
     void playAnimation(float fElapseTime);
     void stopAnimation();
@@ -38,6 +38,7 @@ public:
     void setGameMode(class GMBase* newGameMode);
     bool OnUserCreate() override;
     bool isLocked() const;
+	void signalKeyPressed();
     bool OnUserUpdate(float fElapsedTime) override;
     ~engine();
 };

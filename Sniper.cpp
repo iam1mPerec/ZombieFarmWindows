@@ -71,7 +71,7 @@ void sniper::stat()
     {
         deff   = lvl/3+5;
     }
-    atk    = 4*lvl+50;
+    atk    = 4*lvl+150;
     maxHp  = 10*lvl+200;
     maxExp = 100;
     for (int i = 1; i<lvl; i++)

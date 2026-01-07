@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <conio.h>
+#include <algorithm>
 #include "str.h"
 #include "ptime.h"
 #include "texts_1.h"
@@ -537,7 +538,7 @@ void GMGameMenu::scaterShot(const int DMG)
 void GMGameMenu::HumanSlashedAnimation(const int position)
 {
     drawAll();
-    m_engine->startAnimation(6, 0.2f, [this, position](int frame) {
+    m_engine->startAnimation(6, 0.1f, [this, position](int frame, int totalFrames) {
         int row = position / 4;
         int card = position % 4;
         if (frame == 1) {
@@ -694,8 +695,8 @@ void GMGameMenu::whosTurn()
             print();
             m_engine->startAnimation(
                 35,
-                0.02f,
-                [this](int frame) { this->PopUpAnimation(frame); },
+                0.01f,
+                [this](int frame, int totalFrames) { this->PopUpAnimation(frame); },
                 [this]() { this->drawFinalloseScreen(); }
             );
             if (NightRaid)
@@ -729,53 +730,58 @@ void GMGameMenu::PopUpAnimation(int frame)
     const int COLS = 70;
     const int startRow = 4;
     const int startCol = 4;
-
-    const int finalHeight = ROWS - startRow + 1;
-    const int finalWidth = COLS - startCol + 1;
-
+    const int finalHeight = ROWS - startRow + 1;  // 26
+    const int finalWidth = COLS - startCol + 1;   // 67
     const int totalFrames = 35;
 
     clear();
 
-    // Determine current size
+    // Progress
     int currentFrame = (frame < totalFrames) ? frame : totalFrames - 1;
     float linearProgress = static_cast<float>(currentFrame) / (totalFrames - 1);
 
-    // Height grows linearly
     float heightProgress = linearProgress;
-
-    // Width grows slightly faster
     float widthProgress = std::pow(linearProgress, 1.2f);
-
-    // Clamp just in case
     if (widthProgress > 1.0f) widthProgress = 1.0f;
 
-    // Calculate current dimensions
-    int currentHeight = 2 + static_cast<int>(heightProgress * (finalHeight - 2));
-    int currentWidth = 2 + static_cast<int>(widthProgress * (finalWidth - 2));
+    // Current inner empty area size
+    int innerHeight = static_cast<int>(heightProgress * finalHeight);
+    int innerWidth = static_cast<int>(widthProgress * finalWidth);
 
-    // Center within the target area
-    int top = startRow + (finalHeight - currentHeight) / 2;
-    int bottom = top + currentHeight - 1;
-    int left = startCol + (finalWidth - currentWidth) / 2;
-    int right = left + currentWidth - 1;
+    // Total rectangle size including border
+    int currentHeight = innerHeight + 2;
+    int currentWidth = innerWidth + 2;
 
-    // Draw hollow rectangle border
-    // Top and bottom sides
-    for (int c = left; c <= right; ++c) {
-        screen[top][c] = '-';
-        screen[bottom][c] = '-';
-    }
-    // Left and right sides
+    // Calculate desired position (centered)
+    int desiredTop = startRow + (finalHeight - innerHeight) / 2;
+    int desiredLeft = startCol + (finalWidth - innerWidth) / 2;
+
+    // *** BOUNDS CHECKING: Clamp to valid screen area ***
+    int top = max(0, min(desiredTop, ROWS));         // don't go above row 0 or below last row
+    int left = max(0, min(desiredLeft, COLS - 1));
+    int bottom = min(top + currentHeight - 1, ROWS);         // don't exceed bottom of screen
+    int right = min(left + currentWidth - 1, COLS - 1);      // don't exceed right edge
+
+    // Adjust if clamping shrunk the box too much (optional, but helps avoid distortion)
+    // But usually not needed since growth is inward from safe area
+
+    // SINGLE nested loop to draw the rectangle safely
     for (int r = top; r <= bottom; ++r) {
-        screen[r][left] = '|';
-        screen[r][right] = '|';
+        for (int c = left; c <= right; ++c) {
+            if ((r == top || r == bottom) && (c == left || c == right)) {
+                screen[r][c] = '+';
+            }
+            else if (r == top || r == bottom) {
+                screen[r][c] = '-';
+            }
+            else if (c == left || c == right) {
+                screen[r][c] = '|';
+            }
+            else {
+                screen[r][c] = ' ';
+            }
+        }
     }
-    // Corners
-    screen[top][left] = '+';
-    screen[top][right] = '+';
-    screen[bottom][left] = '+';
-    screen[bottom][right] = '+';
 }
 
 void GMGameMenu::drawFinalPopup(char popup[29][70]) {
@@ -794,11 +800,6 @@ void GMGameMenu::drawFinalPopup(char popup[29][70]) {
             screen[j][i] = popup[y][x];
         }
     }
-
-    m_engine->setOnKeyPressed([this]() {
-        this->hide();
-        this->reveal();
-        });
 }
 
 void GMGameMenu::drawFinalInfoScreen()
@@ -830,11 +831,15 @@ void GMGameMenu::drawFinalInfoScreen()
         "|                                                                   |",
         "|                                                                   |",
         "|                                                                   |",
-        "| - Press any key to continue -                                     |",
         "|                                                                   |",
+        "|                 - Press any key to continue -                     |",
         "|___________________________________________________________________|"
     };
 	drawFinalPopup(endScreen);
+    m_engine->setOnKeyPressed([this]() {
+        this->hide();
+        this->reveal();
+    });
 }
 
 void GMGameMenu::drawFinalloseScreen()
@@ -867,12 +872,17 @@ void GMGameMenu::drawFinalloseScreen()
         "|                                                                   |",
         "|                                                                   |",
         "|                                                                   |",
-        "|                 - Press any key to continue -                     |",
         "|                                                                   |",
+        "|                 - Press any key to continue -                     |",
         "|___________________________________________________________________|"
 
     };
 	drawFinalPopup(endScreen);
+    m_engine->setOnKeyPressed([this]() {
+        this->clear();
+		this->drawUndead();
+        this->drawAll();
+    });
 
     Dial.AddQuote("You've lost!");
     showDialog();
@@ -892,15 +902,15 @@ void GMGameMenu::drawFinalWinScreen()
     "|                                                                   |",
     "|                                                                   |",
     "|                      Congradulations!                             |",
-    "|                         You have won the battle!                  |",
+    "|                      You have won the battle!                     |",
     "|                                                                   |",
     "|                                                                   |",
     "|                                                                   |",
     "|                                                                   |",
     "|         Reward:                                                   |",
     "|                                                                   |",
-    "|         Money                                                     |",
-    "|         Exp                                                       |",
+    "|         Money:                                                    |",
+    "|         Exp:                                                      |",
     "|                                                                   |",
     "|         Items Found:                                              |",
     "|                                                                   |",
@@ -914,13 +924,12 @@ void GMGameMenu::drawFinalWinScreen()
     "|                                    |________|/                    |",
     "|                                                                   |",
     "|                                                                   |",
-    "|                       - Press S to skip -                         |",
+    "|                  - Press any key to continue -                    |",
     "|___________________________________________________________________|"
     };
 
-	drawFinalPopup(endScreen);
-
     int Money = horde.getMoney();
+    int Exp = horde.getExp();
     int equipTicket = 0;
 
     while (Money >= 50)
@@ -941,7 +950,7 @@ void GMGameMenu::drawFinalWinScreen()
     {
         while (equipTicket)
         {
-            item* Aloc = loader.getRandomEquip();
+            //item* item = loader.getRandomEquip();
 
             if (endScreen[21][10] == ' ')
             {
@@ -958,19 +967,19 @@ void GMGameMenu::drawFinalWinScreen()
                     }
                 };
 
-                for (int i = 0; i < 25; i++)
+                /*for (int i = 0; i < 25; i++)
                 {
-                    if (Aloc->getName(i))
+                    if (item != nullptr && item->getName(i))
                     {
-                        endScreen[17 + j * 2][10 + i] = Aloc->getName(i);
+                        endScreen[17 + j * 2][10 + i] = item->getName(i);
                     }
                     else
                     {
                         i = 25;
                     }
-                }
+                }*/
             }
-            items.addItem(Aloc);
+            //if(item != nullptr) items.addItem(item);
             equipTicket--;
         }
     }
@@ -983,195 +992,103 @@ void GMGameMenu::drawFinalWinScreen()
         }
     }
 
-	drawFinalPopup(endScreen);
+    drawFinalPopup(endScreen);
+    print();
 
-    int money = Money;
-    int Exp = horde.getExp();
-    int exp = Exp;
-    int MRate = Money / 14;
-    int ERate = Exp / 14;
-    bool done = false;
-
-    if (MRate <= 2)
+    Res.addMoney(Money);
+    massExp(Exp);
+    
+    static const char coins[20][7] =
     {
-        MRate = 3;
-    }
+        "      ",
+        "      ",
+        "      ",
+        "   o  ",
+        " o    ",
+        "    o ",
+        "  o   ",
+        "     o",
+        " o    ",
+        "  o   ",
+        "      ",
+        "   o  ",
+        " o    ",
+        "      ",
+        "    o ",
+        "      ",
+        "      ",
+        "      ",
+        "      ",
+        "      "
+    };
 
-    if (ERate <= 2)
+    static const char chest[9][15] =
     {
-        ERate = 3;
-    }
+        "              ",
+        "              ",
+        "   _________  ",
+        "  /________/\\ ",
+        " |         || ",
+        " |_________|/ ",
+        "/________ /|  ",
+        "|        | |  ",
+        "|________|/   "
+    };
 
-    int factor_1 = 1;
-    int factor_2 = 1;
-    int factor_3 = 1;
-    int factor_5 = 1;
-    int factor_6 = 1;
 
-    const int x_Coin1 = 50;
-    const int x_Coin2 = 51;
-    const int x_Coin3 = 52;
-    const int x_Coin5 = 54;
-    const int x_Coin6 = 55;
-
-    const int limit = 3;
-
-    int y1 = 21;
-    int y2 = 22;
-    int y3 = 24;
-    int y5 = 22;
-    int y6 = 23;
-    //22
-    char ch1 = ' ';
-    char ch2 = ' ';
-    char ch3 = '_';
-    char ch5 = ' ';
-    char ch6 = ' ';
-
-    while (!done)
-    {
-        Money -= MRate;
-        if (Money <= MRate)
-        {
-            Res.addMoney(Money);
-            horde.setMoney();
-            Money = 0;
-        }
-        else
-        {
-            Res.addMoney(MRate);
+    m_engine->startAnimation(14, 0.3f, [&](int frame, int totalFrames) {
+        
+        for (int j = 0; j < 9; j++) {
+            for (int i = 0; i < 14; i++) {
+                screen[20 + j][41 + i] = chest[j][i];
+            }
         }
 
-        Exp -= ERate;
-        if (Exp <= ERate)
-        {
-            massExp(Exp);
-            horde.setExp();
-            Exp = 0;
-        }
-        else
-        {
-            massExp(ERate);
+        for (int j = 0; j < 6; j++) {
+            for (int i = 0; i < 6; i++) {
+                if (coins[j + 15 - frame][i] != ' ') {
+                    screen[20 + j][43 + i] = coins[j + 15 - frame][i];
+                }
+            }
         }
 
-        if (factor_1 < limit)
-        {
-            screen[y1][x_Coin1] = ch1;
-            ch1 = screen[y1 + 1][x_Coin1];
-            screen[y1 + 1][x_Coin1] = 'o';
-            y1++;
-        }
-        if (y1 == 28)
-        {
-            screen[y1][x_Coin1] = ch1;
-            ch1 = ' ';
-            y1 = 23;
-            factor_1++;
-        }
+        int MRate = horde.getMoney() / totalFrames + 1;
+        int money = horde.getMoney() - MRate * frame;
+        money = max(0, money);
 
-        if (factor_2 < limit)
-        {
-            screen[y2][x_Coin2] = ch2;
-            ch2 = screen[y2 + 1][x_Coin2];
-            screen[y2 + 1][x_Coin2] = 'o';
-            y2++;
-        }
-        if (y2 == 28)
-        {
-            screen[y2][x_Coin2] = ch2;
-            ch2 = ' ';
-            y2 = 22;
-            factor_2++;
-        }
+        int ERate = horde.getExp() / totalFrames + 1;
+        int exp = horde.getExp() - ERate * frame;
+        exp = max(0, exp);
 
-        if (factor_3 < limit)
-        {
-            screen[y3][x_Coin3] = ch3;
-            ch3 = screen[y3 + 1][x_Coin3];
-            screen[y3 + 1][x_Coin3] = 'o';
-            y3++;
-        }
-
-        if (y3 == 28)
-        {
-            screen[y3][x_Coin3] = ch3;
-            ch3 = ' ';
-            y3 = 22;
-            factor_3++;
-        }
-
-        if (factor_5 < limit)
-        {
-            screen[y5][x_Coin5] = ch5;
-            ch5 = screen[y5 + 1][x_Coin5];
-            screen[y5 + 1][x_Coin5] = 'o';
-            y5++;
-        }
-        if (y5 == 28)
-        {
-            screen[y5][x_Coin5] = ch5;
-            ch5 = ' ';
-            y5 = 21;
-            factor_5++;
-        }
-
-        if (factor_6 < limit)
-        {
-            screen[y6][x_Coin6] = ch6;
-            ch6 = screen[y6 + 1][x_Coin6];
-            screen[y6 + 1][x_Coin6] = 'o';
-            y6++;
-        }
-        if (y6 == 28)
-        {
-            screen[y6][x_Coin6] = ch6;
-            ch6 = ' ';
-            y6 = 23;
-            factor_6++;
-        }
-
-        money = Money;
-        exp = Exp;
         for (int i = 0; i < LenOfNumbers(100000); i++)
         {
-            screen[32][31 - i] = ' ';
+            screen[16][25 - i] = ' ';
         }
-        for (int i = 0; i < LenOfNumbers(Money); i++)
+        for (int i = 0; i < LenOfNumbers(horde.getMoney()); i++)
         {
-            screen[32][31 - i] = (char)((int)'0') + money % 10;
+            screen[16][25 - i] = (char)((int)'0') + money % 10;
             money /= 10;
         }
         for (int i = 0; i < LenOfNumbers(100000); i++)
         {
-            screen[32][31 - i] = ' ';
+            screen[17][25 - i] = ' ';
         }
-        for (int i = 0; i < LenOfNumbers(Exp); i++)
+        for (int i = 0; i < LenOfNumbers(horde.getExp()); i++)
         {
-            screen[32][31 - i] = (char)((int)'0') + exp % 10;
+            screen[17][25 - i] = (char)((int)'0') + exp % 10;
             exp /= 10;
         }
-        mapResources();
-        print();
+		print();
 
-        if (Money == 0 && Exp == 0)
-        {
-            done = true;
-            m_engine->pause(1, [this, &Money, &Exp]() {
-                Res.addMoney(Money);
-                Money = 0;
-                horde.setMoney();
-
-                massExp(Exp);
-                horde.setExp();
-                Exp = 0;
-                clear();
-                mapResources();
-                troops.drawAll();
-                drawAll();
-                print();
-                });
-        }
-    }
+        }, [this] {
+			clear();
+            horde.setMoney();
+			horde.setExp();
+            mapResources();
+            troops.drawAll();
+            drawAll();
+            print();
+        });
 }
 
 
@@ -1248,7 +1165,7 @@ void GMGameMenu::zombieslashedAnimation(const int dmg)
     m_engine->startAnimation(
         8,
         0.1f,
-        [this](int frame) {
+        [this](int frame, int totalFrames) {
 		int ROWS = 10;
 		int COLS = 11;
         if (frame == 1) {
@@ -1402,31 +1319,39 @@ void GMGameMenu::deleteWaves()
 {
     int count = horde.getCount();
 
-    horde.deleteWave();
+	horde.deleteWave();
 
     if (count <= 8)
     {
-		clear();
-        drawAll();
         Dial.AddQuote("Congradulations! You've won!");
-        horde.resetWaves();
+        side.setMenuOption(options::ended);
         side.clear();
-        side.setOption(0);
-        side.option_battle();
-        side.setMenuOption(options::battle);
-        battle = false;
-        mapResources();
-        showTime();
         showSide();
+        drawAll();
         print();
         m_engine->startAnimation(
             35,
-            0.02f,
-            [this](int frame) { this->PopUpAnimation(frame); },
-            [this]() { this->drawFinalWinScreen(); }
+            0.03f,
+            [this](int frame, int totalFrames) {
+                this->PopUpAnimation(frame);
+            },
+            [this] {
+                battle = false;
+                mapResources();
+                showTime();
+                print();
+                this->drawFinalWinScreen();
+                m_engine->setOnKeyPressed([this]() {
+                    horde.resetWaves();
+                    side.setMenuOption(options::battle);
+                    side.option_battle();
+                    showSide();
+                    this->clear();
+                    this->drawAll();
+                    NightRaid = false;
+                });
+            }
         );
-        NightRaid = false;
-        show();
     }
     else
     {
@@ -2196,7 +2121,7 @@ void GMGameMenu::drawStats()
 
 void GMGameMenu::ZombieCritAnimation()
 {
-    m_engine->startAnimation(10, 0.1,[this](int frame) {
+    m_engine->startAnimation(10, 0.1,[this](int frame, int totalFrames) {
         char buff[7][9] = {};
         if (frame % 2 == 0)
         {
@@ -2239,7 +2164,7 @@ void GMGameMenu::ZombieCritAnimation()
 
 void GMGameMenu::ZombieStunnedAnimation()
 {
-    m_engine->startAnimation(16, 0.1,[this](int frame) {
+    m_engine->startAnimation(16, 0.1,[this](int frame, int totalFrames) {
         char buff[4][9] = {};
         if (frame % 8 == 0)
         {
@@ -4228,7 +4153,7 @@ void GMGameMenu::blink(const int position, bool present)
 
 void GMGameMenu::massAttack(const int Dmg)
 {
-    m_engine->startAnimation(32, 0.12f, [this, Dmg](int frame) {
+    m_engine->startAnimation(32, 0.12f, [this, Dmg](int frame, int totalFrames) {
         if (horde.exists(3 - frame/4))
         {
             blink(3 - frame/4, frame % 2);
@@ -4252,7 +4177,7 @@ void GMGameMenu::splash(const int dmg, const int splash)
         {
 
             //TODO check and continue from here
-            m_engine->startAnimation(8, 0.13f, [this, dmg, splash](int frame) {
+            m_engine->startAnimation(8, 0.13f, [this, dmg, splash](int frame, int totalFrames) {
                 if (horde.exists(x1 - 1))
                 {
                     blink(x1 - 1, (8-frame) % 2);
@@ -4435,7 +4360,7 @@ void GMGameMenu::manipulator_Bombing(eControls controls)
 
 void GMGameMenu::healingAnimation()
 {
-    m_engine->startAnimation(16, 0.1, [this](int frame) {
+    m_engine->startAnimation(16, 0.1, [this](int frame, int totalFrames) {
         char buff[16][20] =
         {
             "+     +        +   ",
@@ -4512,7 +4437,7 @@ void GMGameMenu::healingAnimation()
 
 void GMGameMenu::ZombieBiteAninmation()
 {
-    m_engine->startAnimation(16, 0.1f, [this](int frame) {
+    m_engine->startAnimation(16, 0.1f, [this](int frame, int totalFrames) {
         int count = 16 - frame;
         char front[2][9] =
         {
@@ -4550,7 +4475,7 @@ void GMGameMenu::ZombieBiteAninmation()
 void GMGameMenu::massHealAnimation()
 {
     m_engine->startAnimation(
-        16, 0.1f, [this](int frame) {
+        16, 0.1f, [this](int frame, int totalFrames) {
             char buff[16][20] =
             {
                 "+     +        +   ",
@@ -4644,7 +4569,7 @@ void GMGameMenu::massHealAnimation()
 
 void GMGameMenu::ZombiePirsAnimation()
 {
-    m_engine->startAnimation(16, 0.1f, [this] (int frame) {
+    m_engine->startAnimation(16, 0.1f, [this] (int frame, int totalFrames) {
         int count = 16 - frame;
         char buff[8][9] =
         {
@@ -4698,7 +4623,7 @@ void GMGameMenu::ZombiePirsAnimation()
 
 void GMGameMenu::ZombieBuffAnimation()
 {
-    m_engine->startAnimation(16, 0.1f, [this](int frame) {
+    m_engine->startAnimation(16, 0.1f, [this](int frame, int totalFrames) {
         int count = 16 - frame;
         char buff[3][9] =
         {
@@ -5475,7 +5400,7 @@ GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
         m_engine->startAnimation(
             35,
             0.01f,
-            [this](int frame) { this->PopUpAnimation(frame); },
+            [this](int frame, int totalFrames) { this->PopUpAnimation(frame); },
             [this]() { this->drawFinalInfoScreen(); }
         );
     }
