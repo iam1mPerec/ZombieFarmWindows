@@ -4584,8 +4584,10 @@ void GMGameMenu::massHealAnimation()
         }, [this] {
             massHeal(troops.getAttacker()->getAbility(4) * 50);
             troops.getAttacker()->usedTurn();
-            whosTurn();
+			side.setMenuOption(options::attacking);
+			showSide();
 			drawAll();
+            whosTurn();
         });
 }
 
