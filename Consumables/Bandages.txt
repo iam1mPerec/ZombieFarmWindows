@@ -1,0 +1,14 @@
+$
+Old$Strips
+100
+5
+Prevents bleeding     ^
+and saves lives       ^
+Heals up for 100 hp   ^
+$
+Medical$Bandages
+250
+15
+Prevents bleeding     ^
+and saves lives       ^
+Heals up for 250 hp   ^

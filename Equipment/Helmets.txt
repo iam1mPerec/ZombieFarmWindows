@@ -1,0 +1,53 @@
+$
+Mystic$River
+25
+300
+0
+300
+2
+This item grants bearer   ^
+A huge protection against ^
+hordes of brain hungry    ^
+bastards ^
+$
+Lunatic
+56
+250
+-5
+25
+2
+This cap will make you slow ^
+And dizzy but will somehow  ^ 
+grant you a whole lot of    ^
+protection ^
+$
+Doctor$Cap
+5
+150
++5
+100
+4
+Not much of a protection  ^
+or warmth. But this cap   ^ 
+will make you act faster  ^
+$
+Ultra$Goggles
+5
+150
++5
+150
+0
+This goggles do not    ^
+contribute your combat ^
+skills but who cares   ^
+if you look awesome    ^
+$
+Eagle$Eye
+45
+150
+0
+250
+3
+Great durable helmet that ^
+says military all over it ^
+$

@@ -1,0 +1,49 @@
+$
+Grave$Walkers
+10
+100
+250
+2
+They are silent and    ^
+deadly so you now have ^
+2 reasons to love them ^
+$
+Heavy$Stompers
+25
+50
+300
+2
+For those who are not  ^
+afraid to make some    ^
+noise                  ^
+$
+Wild$Slippers
+5
+250
+100
+3
+No one would dare to   ^
+call you a slob if you ^
+are to wear thous. . . ^
+with an uzi perhaps    ^
+$
+Monday$Socks
+10
+200
+5
+0
+Those socks lived many ^
+for mondays and will   ^
+for many more to come  ^
+$
+Bad$Steps
+15
+350
+400
+0
+the road to hell is    ^
+paved with good        ^
+intentions. So may be  ^
+You should watch       ^
+your steps             ^
+$

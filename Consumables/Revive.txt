@@ -1,0 +1,21 @@
+$
+Small$Revive
+250
+200
+This mixture is meant ^
+to give you a second  ^
+chance                ^
+$
+Medium$Revive
+500
+350
+This mixture is meant ^
+to give you a second  ^
+chance                ^
+$
+Large$Revive
+1000
+500
+This mixture is meant ^
+to give you a second  ^
+chance                ^

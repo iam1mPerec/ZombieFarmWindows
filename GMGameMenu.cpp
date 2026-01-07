@@ -5711,14 +5711,14 @@ bool GMGameMenu::isBuilding(const char* name) const
 
 void GMGameMenu::save()
 {
-    ofstream saveFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Save.txt");
+    ofstream saveFile("Save.txt");
     saveFile << possession.getHouseSize() << '\n' << possession.getRoad() << '\n' << MyField.getSize() << '\n';
     saveFile << possession.getTentSize() << '\n' << possession.getBarracks() << '\n';
     saveFile << Res.getWood() << '\n' << Res.getFood() << '\n' << Res.getSeeds() << '\n' << Res.getMoney() << '\n' << farmers.getcount() << '\n';
     saveFile << GlobalTime.getDay() << '\n' << GlobalTime.getHour() << '\n' << GlobalTime.getMin() << '\n';
     saveFile.close();
 
-    ofstream Units("/Users/1mperec/Desktop/Веселый Зомби Фермер/Units.txt");
+    ofstream Units("Units.txt");
     for (int row = 0; row < 2; row++)
     {
         for (int card = 0; card < 4; card++)
@@ -5731,7 +5731,7 @@ void GMGameMenu::save()
         }
     }
     Units.close();
-    ofstream Eve("/Users/1mperec/Desktop/Веселый Зомби Фермер/Eve.txt");
+    ofstream Eve("Eve.txt");
 
     Eve << list.getCount() << '\n';
     event* aloc = list.getHead();
@@ -5796,7 +5796,7 @@ void GMGameMenu::save()
 
     Eve.close();
 
-    ofstream Inventory("/Users/1mperec/Desktop/Веселый Зомби Фермер/Inventory.txt");
+    ofstream Inventory("Inventory.txt");
     char buff[20];
     for (int ITEMS = 0; ITEMS < items.getCount(); ITEMS++)
     {
@@ -5814,7 +5814,7 @@ void GMGameMenu::save()
     }
     Inventory.close();
 
-    ofstream Equipment("/Users/1mperec/Desktop/Веселый Зомби Фермер/Equipment.txt");
+    ofstream Equipment("Equipment.txt");
 
     for (int Units = 0; Units < 8; Units++)
     {
@@ -5899,7 +5899,7 @@ void GMGameMenu::save()
 
 void GMGameMenu::load()
 {
-    ifstream saveFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Save.txt");
+    ifstream saveFile("Save.txt");
     int wood = 0;
     int food = 0;
     int seeds = 0;
@@ -5965,7 +5965,7 @@ void GMGameMenu::load()
 
     saveFile.close();
 
-    ifstream Units("/Users/1mperec/Desktop/Веселый Зомби Фермер/Units.txt");
+    ifstream Units("Units.txt");
     int type = 0;
     int lvl = 0;
     int exp = 0;
@@ -6017,7 +6017,7 @@ void GMGameMenu::load()
     }
     Units.close();
 
-    ifstream Eve("/Users/1mperec/Desktop/Веселый Зомби Фермер/Eve.txt");
+    ifstream Eve("Eve.txt");
 
     int  count = 0;
     int  option = 0;
@@ -6160,7 +6160,7 @@ void GMGameMenu::load()
 
     Eve.close();
 
-    ifstream Inventory("/Users/1mperec/Desktop/Веселый Зомби Фермер/Inventory.txt");
+    ifstream Inventory("Inventory.txt");
     while (!Inventory.eof())
     {
         Inventory >> buff;
@@ -6202,7 +6202,7 @@ void GMGameMenu::load()
     }
     Inventory.close();
 
-    ifstream Equipment("/Users/1mperec/Desktop/Веселый Зомби Фермер/Equipment.txt");
+    ifstream Equipment("Equipment.txt");
 
     for (int Units = 0; Units < 8; Units++)
     {

@@ -1,0 +1,47 @@
+$
+Cold$Snap
+20
+300
+350
+0
+Do you feel ^
+the chill?  ^
+$
+Heavy$Grips
+35
+150
+400
+2
+Grip hard ^
+Die young ^
+Be wild   ^
+Have fun  ^
+$
+Death$Hug
+10
+400
+450
+0
+Best wishes and  ^
+lots of kisses   ^
+$
+Doctor$Gloves
+5
+150
+40
+4
+This gloves are there     ^
+to bring safety into      ^
+the wild lives of doctors ^
+$
+Looters
+35
+250
+600
+3
+This gloves have some ^
+history, no-one cares ^
+thou                  ^
+$
+
+

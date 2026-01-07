@@ -1,0 +1,24 @@
+$
+Small$Potion
+300
+25
+That is a very strong  ^
+potion that is placed  ^
+in a tiny bottle       ^
+heals for up to 300 hp ^
+$
+Medium$Potion
+600
+75
+That is a very strong  ^
+potion that is placed  ^
+in a tiny bottle       ^
+heals for up to 600 hp ^
+$
+Large$Potion
+900
+100
+That is a very strong  ^
+potion that is placed  ^
+in a tiny bottle       ^
+heals for up to 900 hp ^

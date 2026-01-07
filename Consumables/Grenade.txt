@@ -1,0 +1,22 @@
+$
+Assault
+300
+25
+Massive explosion          ^
+is caused by this          ^
+thing. Deals up to 300 dmg ^
+$
+Nova
+600
+75
+Massive explosion          ^
+is caused by this          ^
+thing. Deals up to 600 dmg ^
+$
+Pineapple
+900
+100
+An explosion of your      ^
+favorite flavor in        ^
+your enemy s face that    ^
+Deals up to 900 dmg       ^

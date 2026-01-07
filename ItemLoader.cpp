@@ -51,7 +51,7 @@ item* itemLoader::getRandomEquip()
 chest* itemLoader::chest(const int type)
 {
     {
-        ifstream LoadFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Chests.txt");
+        ifstream LoadFile("Equipment/Chests.txt");
         
         class chest* aloc;
         
@@ -149,7 +149,7 @@ chest* itemLoader::chest(const int type)
 gloves* itemLoader::gloves(const int type)
 {
     {
-        ifstream LoadFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Gloves.txt");
+        ifstream LoadFile("Equipment/Gloves.txt");
         
         class gloves* aloc;
         
@@ -249,7 +249,7 @@ gloves* itemLoader::gloves(const int type)
 
 boots* itemLoader::boots(const int type)
 {
-    ifstream LoadFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Boots.txt");
+    ifstream LoadFile("Equipment/Boots.txt");
     
     class boots* aloc;
     
@@ -345,7 +345,7 @@ boots* itemLoader::boots(const int type)
 
 helmet* itemLoader::helmet(const int type)
 {
-    ifstream LoadFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Helmets.txt");
+    ifstream LoadFile("Equipment/Helmets.txt");
     
     class helmet* aloc;
     
@@ -486,7 +486,7 @@ helmet* itemLoader::helmet(const int type)
 
 weapon* itemLoader::weapon(const int type)
 {
-ifstream LoadFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Weapons.txt");
+ifstream LoadFile("Equipment/Weapons.txt");
 
 class weapon* aloc;
 
@@ -657,7 +657,7 @@ return aloc;
 
 class potion* itemLoader::potion  (const int type, const int Count)
 {
-    ifstream LoadFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/consumables/Potion.txt");
+    ifstream LoadFile("consumables/Potion.txt");
     
     class potion* aloc;
     
@@ -714,7 +714,7 @@ class potion* itemLoader::potion  (const int type, const int Count)
 
 class kit* itemLoader::kit     (const int type, const int Count)
 {
-    ifstream LoadFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/consumables/Kit.txt");
+    ifstream LoadFile("consumables/Kit.txt");
     
     class kit* aloc;
     
@@ -770,7 +770,7 @@ class kit* itemLoader::kit     (const int type, const int Count)
 }
 class bandages* itemLoader::bandages(const int type, const int Count)
 {
-    ifstream LoadFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/consumables/Bandages.txt");
+    ifstream LoadFile("consumables/Bandages.txt");
     
     class bandages* aloc;
     
@@ -826,7 +826,7 @@ class bandages* itemLoader::bandages(const int type, const int Count)
 }
 class revive* itemLoader::revive   (const int type, const int Count)
 {
-    ifstream LoadFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/consumables/Revive.txt");
+    ifstream LoadFile("consumables/Revive.txt");
     
     class revive* aloc;
     
@@ -883,7 +883,7 @@ class revive* itemLoader::revive   (const int type, const int Count)
 
 class grenade* itemLoader::grenade (const int type, const int Count)
 {
-    ifstream LoadFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/consumables/Grenade.txt");
+    ifstream LoadFile("consumables/Grenade.txt");
     
     class grenade* aloc;
     
@@ -940,7 +940,7 @@ class grenade* itemLoader::grenade (const int type, const int Count)
 
 class bomb* itemLoader::bomb       (const int type, const int Count)
 {
-    ifstream LoadFile("/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/consumables/Bomb.txt");
+    ifstream LoadFile("consumables/Bomb.txt");
     
     class bomb* aloc;
     
@@ -1022,67 +1022,67 @@ int itemLoader::TypeFinder(const char *Name, const char *path) const
 
 chest* itemLoader::chest(const char* Name)
 {
-    int type = TypeFinder(Name, "/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Chests.txt");
+    int type = TypeFinder(Name, "Equipment/Chests.txt");
     return chest(type);
 }
 
 boots* itemLoader::boots(const char* Name)
 {
-    int type = TypeFinder(Name, "/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Boots.txt");
+    int type = TypeFinder(Name, "Equipment/Boots.txt");
     return boots(type);
 }
 
 gloves* itemLoader::gloves(const char* Name)
 {
-    int type = TypeFinder(Name, "/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Gloves.txt");
+    int type = TypeFinder(Name, "Equipment/Gloves.txt");
     return gloves(type);
 }
 
 helmet* itemLoader::helmet(const char* Name)
 {
-    int type = TypeFinder(Name, "/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Helmets.txt");
+    int type = TypeFinder(Name, "Equipment/Helmets.txt");
     return helmet(type);
 }
 
 weapon* itemLoader::weapon(const char* Name)
 {
-    int type = TypeFinder(Name, "/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Weapons.txt");
+    int type = TypeFinder(Name, "Equipment/Weapons.txt");
     return weapon(type);
 }
 
 class potion* itemLoader::potion    (const char* Name, const int Count)
 {
-    int type = TypeFinder(Name, "/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Potion.txt");
+    int type = TypeFinder(Name, "Equipment/Potion.txt");
     return potion(type, Count);
 }
 
 class kit* itemLoader::kit          (const char* Name, const int Count)
 {
-    int type = TypeFinder(Name, "/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Kit.txt");
+    int type = TypeFinder(Name, "Equipment/Kit.txt");
     return kit(type, Count);
 }
 
 class bandages* itemLoader::bandages(const char* Name, const int Count)
 {
-    int type = TypeFinder(Name, "/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Bandages.txt");
+    int type = TypeFinder(Name, "Equipment/Bandages.txt");
     return bandages(type, Count);
 }
 
 class grenade* itemLoader::grenade  (const char* Name, const int Count)
 {
-    int type = TypeFinder(Name, "/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Grenade.txt");
+    int type = TypeFinder(Name, "Equipment/Grenade.txt");
     return grenade(type, Count);
 }
 
 class bomb* itemLoader::bomb        (const char* Name, const int Count)
 {
-    int type = TypeFinder(Name, "/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Bomb.txt");
+    int type = TypeFinder(Name, "Equipment/Bomb.txt");
     return bomb(type, Count);
 }
 
 class revive* itemLoader::revive    (const char* Name, const int Count)
 {
-    int type = TypeFinder(Name, "/Users/1mperec/Desktop/Веселый Зомби Фермер/Items/Equipment/Revive.txt");
+    int type = TypeFinder(Name, "Equipment/Revive.txt");
     return revive(type, Count);
 }
 

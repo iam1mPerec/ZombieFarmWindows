@@ -1,0 +1,46 @@
+$
+Lothars$Plates
+30
+300
+500
+2
+This item once belonged   ^
+to a legendary hero       ^
+and this description      ^
+once belonged to blizzard ^
+$
+Classy$Suit
+5
+200
+350
+3
+Elegant   ^
+Expensive ^
+Useless   ^
+$
+Sharp$Edge
+25
+450
+550
+0
+Heavy and durable ^
+Excellent choice  ^
+$
+Uthers$Pride
+45
+200
+400
+2
+Hit them hard        ^
+With the might of    ^
+this stylish armour  ^
+$
+Isolation$Stripes
+10
+250
+275
+0
+People will feel  ^
+depressed just    ^
+by looking at you ^
+$
