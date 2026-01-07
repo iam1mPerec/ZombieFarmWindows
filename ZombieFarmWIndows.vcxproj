@@ -271,7 +271,18 @@
     <ClInclude Include="Zombie.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Consumables\Bandages.txt" />
+    <Text Include="Consumables\Bomb.txt" />
+    <Text Include="Consumables\Grenade.txt" />
+    <Text Include="Consumables\Kit.txt" />
+    <Text Include="Consumables\Potion.txt" />
+    <Text Include="Consumables\Revive.txt" />
     <Text Include="Equipment.txt" />
+    <Text Include="Equipment\Boots.txt" />
+    <Text Include="Equipment\Chests.txt" />
+    <Text Include="Equipment\Gloves.txt" />
+    <Text Include="Equipment\Helmets.txt" />
+    <Text Include="Equipment\Weapons.txt" />
     <Text Include="Eve.txt" />
     <Text Include="Inventory.txt" />
     <Text Include="Save.txt" />

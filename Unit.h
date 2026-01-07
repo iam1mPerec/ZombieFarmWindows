@@ -43,13 +43,6 @@ public:
     
     void  revive();
     void  addBuff();
-    void  setAtkBuff();
-    void  setDefBuff();
-    void  setMaxTurnsBuff();
-    void  setMaxHpBuff();
-    void  setPriorityBuff();
-    void  setCritBuff();
-    void  setStunBuff();
     
     class helmet* getHelmet() const;
     class chest*  getChest () const;

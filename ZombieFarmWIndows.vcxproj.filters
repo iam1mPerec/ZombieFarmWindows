@@ -22,6 +22,15 @@
     <Filter Include="GameModes">
       <UniqueIdentifier>{a55fa654-15a7-489e-811a-9c31adf4e1ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Equipment">
+      <UniqueIdentifier>{4357e923-9b16-40eb-a9c8-4192afcfbb61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Consumables">
+      <UniqueIdentifier>{5045805e-af54-451e-ae4b-5e2a94d79093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SaveFiles">
+      <UniqueIdentifier>{3df0a50e-ef20-42c0-bf55-e53fdcfb812b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="engine.cpp">
@@ -445,10 +454,53 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Equipment.txt" />
-    <Text Include="Eve.txt" />
-    <Text Include="Inventory.txt" />
-    <Text Include="Save.txt" />
-    <Text Include="Units.txt" />
+    <Text Include="Equipment\Boots.txt">
+      <Filter>Equipment</Filter>
+    </Text>
+    <Text Include="Equipment\Chests.txt">
+      <Filter>Equipment</Filter>
+    </Text>
+    <Text Include="Equipment\Gloves.txt">
+      <Filter>Equipment</Filter>
+    </Text>
+    <Text Include="Equipment\Helmets.txt">
+      <Filter>Equipment</Filter>
+    </Text>
+    <Text Include="Equipment\Weapons.txt">
+      <Filter>Equipment</Filter>
+    </Text>
+    <Text Include="Consumables\Bandages.txt">
+      <Filter>Consumables</Filter>
+    </Text>
+    <Text Include="Consumables\Bomb.txt">
+      <Filter>Consumables</Filter>
+    </Text>
+    <Text Include="Consumables\Grenade.txt">
+      <Filter>Consumables</Filter>
+    </Text>
+    <Text Include="Consumables\Kit.txt">
+      <Filter>Consumables</Filter>
+    </Text>
+    <Text Include="Consumables\Potion.txt">
+      <Filter>Consumables</Filter>
+    </Text>
+    <Text Include="Consumables\Revive.txt">
+      <Filter>Consumables</Filter>
+    </Text>
+    <Text Include="Units.txt">
+      <Filter>SaveFiles</Filter>
+    </Text>
+    <Text Include="Equipment.txt">
+      <Filter>SaveFiles</Filter>
+    </Text>
+    <Text Include="Eve.txt">
+      <Filter>SaveFiles</Filter>
+    </Text>
+    <Text Include="Inventory.txt">
+      <Filter>SaveFiles</Filter>
+    </Text>
+    <Text Include="Save.txt">
+      <Filter>SaveFiles</Filter>
+    </Text>
   </ItemGroup>
 </Project>

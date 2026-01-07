@@ -159,7 +159,8 @@ void GMGameMenu::manipulator_Abilities(eControls controls)
     {
         if (troops.getAttacker()->getAbility(1))
         {
-            scaterShot(troops.getAttacker()->getAbility(1) * 50);
+			print();
+            scaterShotAnimation(troops.getAttacker()->getAbility(1) * 50);
         }
     }
 
@@ -235,7 +236,6 @@ void GMGameMenu::manipulator_Abilities(eControls controls)
             drawAll();
             drawUndead();
             choose(y2, x2);
-
         }
     }
 
@@ -517,22 +517,36 @@ void GMGameMenu::heal()
     choose(y2, x2);
 }
 
-void GMGameMenu::scaterShot(const int DMG)
+void GMGameMenu::scaterShotAnimation(const int DMG)
 {
-    troops.getAttacker()->usedTurn();
-    massAttack(DMG);
-    whosTurn();
+    m_engine->startAnimation(33, 0.12f, [=](int frame, int totalFrames) {
+        
+		drawUndead();
 
-    if (battle)
-    {
-        side.setMenuOption(attacking);
-    }
-    else
-    {
-        side.setMenuOption(battle);
-    }
+        if (horde.exists(3 - frame / 8)) {
+            blink(3 - frame / 8, frame % 2);
+            if (frame % 8 == 1) horde.getUnit(3 - frame / 8)->damage(DMG);
+        }
+        if (horde.exists(4 + frame / 8)) {
+            blink(4 + frame / 8, frame % 2);
+            if (frame % 8 == 1) horde.getUnit(4 + frame / 8)->damage(DMG);
+        }
 
-    side.setOption(0);
+        print();
+    }, [this] {
+        if (troops.getAttacker()) troops.getAttacker()->usedTurn();
+        if (battle)
+        {
+            side.setMenuOption(attacking);
+        } 
+        else 
+        {
+            side.setMenuOption(battle);
+        }
+        side.setOption(0);
+
+        whosTurn();
+    });
 }
 
 void GMGameMenu::HumanSlashedAnimation(const int position)
@@ -950,7 +964,7 @@ void GMGameMenu::drawFinalWinScreen()
     {
         while (equipTicket)
         {
-            //item* item = loader.getRandomEquip();
+            item* item = loader.getRandomEquip();
 
             if (endScreen[21][10] == ' ')
             {
@@ -966,20 +980,23 @@ void GMGameMenu::drawFinalWinScreen()
                         i = 3;
                     }
                 };
-
-                /*for (int i = 0; i < 25; i++)
-                {
-                    if (item != nullptr && item->getName(i))
+                if (item != nullptr) {
+                    for (int i = 0; i < 25; i++)
                     {
-                        endScreen[17 + j * 2][10 + i] = item->getName(i);
+                        if (item != nullptr && item->getName(i))
+                        {
+                            endScreen[17 + j * 2][10 + i] = item->getName(i);
+                        }
+                        else
+                        {
+                            i = 25;
+                        }
                     }
-                    else
-                    {
-                        i = 25;
-                    }
-                }*/
+                }
+                
             }
-            //if(item != nullptr) items.addItem(item);
+
+            if(item != nullptr) items.addItem(item);
             equipTicket--;
         }
     }
@@ -998,31 +1015,37 @@ void GMGameMenu::drawFinalWinScreen()
     Res.addMoney(Money);
     massExp(Exp);
     
-    static const char coins[20][7] =
+    const char coins[26][9] =
     {
-        "      ",
-        "      ",
-        "      ",
-        "   o  ",
-        " o    ",
-        "    o ",
-        "  o   ",
-        "     o",
-        " o    ",
-        "  o   ",
-        "      ",
-        "   o  ",
-        " o    ",
-        "      ",
-        "    o ",
-        "      ",
-        "      ",
-        "      ",
-        "      ",
-        "      "
+        "        ",
+        "        ",
+        "        ",
+        "        ",
+        "        ",
+        "        ",
+        "        ",
+        "        ",
+        "      o ",
+        "   o    ",
+        " o      ",
+        "   o    ",
+        "  o     ",
+        "    o   ",
+        " o      ",
+        "  o     ",
+        "     o  ",
+        "   o    ",
+        " o      ",
+        "     o  ",
+        "    o   ",
+        "        ",
+        "        ",
+        "        ",
+        "        ",
+        "        "
     };
 
-    static const char chest[9][15] =
+    const char chest[9][15] =
     {
         "              ",
         "              ",
@@ -1036,18 +1059,23 @@ void GMGameMenu::drawFinalWinScreen()
     };
 
 
-    m_engine->startAnimation(14, 0.3f, [&](int frame, int totalFrames) {
+    m_engine->startAnimation(20, 0.2f, [=](int frame, int totalFrames) {
         
+		const int ANIMATION_ROW = 20;
+		const int CHEST_COL = 41;
+
         for (int j = 0; j < 9; j++) {
-            for (int i = 0; i < 14; i++) {
-                screen[20 + j][41 + i] = chest[j][i];
+            for (int i = 0; i < 15; i++) {
+                screen[ANIMATION_ROW + j][CHEST_COL + i] = chest[j][i];
             }
         }
 
+		const int COINS_COL = 43;
+
         for (int j = 0; j < 6; j++) {
-            for (int i = 0; i < 6; i++) {
-                if (coins[j + 15 - frame][i] != ' ') {
-                    screen[20 + j][43 + i] = coins[j + 15 - frame][i];
+            for (int i = 0; i < 8; i++) {
+                if (coins[j + totalFrames + 1 - frame][i] != ' ') {
+                    screen[ANIMATION_ROW + j][COINS_COL + i] = coins[j + totalFrames + 1 - frame][i];
                 }
             }
         }
@@ -1080,15 +1108,24 @@ void GMGameMenu::drawFinalWinScreen()
         }
 		print();
 
-        }, [this] {
-			clear();
+        }, [=] {
             horde.setMoney();
-			horde.setExp();
+            horde.setExp();
             mapResources();
-            troops.drawAll();
-            drawAll();
-            print();
-        });
+            horde.resetWaves();
+            m_engine->setOnKeyPressed([this]() {
+                clear();
+                troops.drawAll();
+                drawAll();
+                print();
+                side.setMenuOption(options::battle);
+                side.option_battle();
+                showSide();
+                this->clear();
+                this->drawAll();
+                NightRaid = false;
+                });
+            });
 }
 
 
@@ -1340,16 +1377,8 @@ void GMGameMenu::deleteWaves()
                 mapResources();
                 showTime();
                 print();
-                this->drawFinalWinScreen();
-                m_engine->setOnKeyPressed([this]() {
-                    horde.resetWaves();
-                    side.setMenuOption(options::battle);
-                    side.option_battle();
-                    showSide();
-                    this->clear();
-                    this->drawAll();
-                    NightRaid = false;
-                });
+                drawFinalWinScreen();
+                
             }
         );
     }
@@ -3688,7 +3717,7 @@ void GMGameMenu::use(item* item, char* name, unit* unit, bool& exit)
             drawAll();
             drawUndead();
             item->consume();
-            scaterShot(item->getProperty());
+            scaterShotAnimation(item->getProperty());
         }
         if (equals(name, "Kit"))
         {
@@ -4151,33 +4180,15 @@ void GMGameMenu::blink(const int position, bool present)
     }
 }
 
-void GMGameMenu::massAttack(const int Dmg)
-{
-    m_engine->startAnimation(32, 0.12f, [this, Dmg](int frame, int totalFrames) {
-        if (horde.exists(3 - frame/4))
-        {
-            blink(3 - frame/4, frame % 2);
-            horde.getUnit(3 - frame / 4)->damage(Dmg);
-        }
-        if (horde.exists(4 + frame / 4))
-        {
-            blink(4 + frame / 4, frame % 2);
-            horde.getUnit(4 + frame / 4)->damage(Dmg);
-        }
-        print();
-        });
-    drawUndead();
-}
-
 void GMGameMenu::splash(const int dmg, const int splash)
 {
     if (splash)
     {
         if (horde.exists(x1 - 1) || horde.exists(x1 + 1))
         {
-
-            //TODO check and continue from here
-            m_engine->startAnimation(8, 0.13f, [this, dmg, splash](int frame, int totalFrames) {
+                //TODO check and continue from here
+            m_engine->startAnimation(8, 0.13f, [this, dmg, splash](int frame, int totalFrames) 
+            {
                 if (horde.exists(x1 - 1))
                 {
                     blink(x1 - 1, (8-frame) % 2);
@@ -4187,20 +4198,22 @@ void GMGameMenu::splash(const int dmg, const int splash)
                     blink(x1 + 1, (8-frame) % 2);
                 }
                 print();
-                print();
-				});
-
-            int s = (dmg * splash) / 100;
-
-            if (horde.exists(x1 - 1))
+            }, [&] 
             {
-                horde.getUnit(x1 - 1)->damage(s);
-            }
-            if (horde.exists(x1 + 1))
-            {
-                horde.getUnit(x1 + 1)->damage(s);
-            }
-            drawUndead();
+                int s = (dmg * splash) / 100;
+
+                if (horde.exists(x1 - 1))
+                {
+                    horde.getUnit(x1 - 1)->damage(s);
+                }
+                if (horde.exists(x1 + 1))
+                {
+                    horde.getUnit(x1 + 1)->damage(s);
+                }
+                drawUndead();
+
+            });
+
         }
     }
 }
@@ -5392,6 +5405,14 @@ GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
         troops.addSolder(0, 1, 10);
         troops.addSolder(0, 2, 10);
 
+        items.addItem(loader.chest(Chest::SharpEdge));
+        items.addItem(loader.weapon(Weapon::RustyShovel));
+        items.addItem(loader.helmet(Helmet::UltraGoggles));
+
+        items.addItem(loader.potion(Potion::Lotion, 25));
+        items.addItem(loader.bomb(Bomb::Nuke, 20));
+        items.addItem(loader.grenade(Grenade::Nova, 25));
+
         mapResources();
         showTime();
         showSide();
@@ -6254,7 +6275,7 @@ void GMGameMenu::showTime()
     CharOut(GlobalTime.getDay() / 10, 2, SidePlank + 7);
     CharOut(GlobalTime.getDay() % 10, 2, SidePlank + 8);
 
-    if ((GlobalTime.getSec() % 30 == 0) && (side.getMenuOption() == options::battle) && (GlobalTime.getSec() != blinkedAt))
+    if ((GlobalTime.getSec() % 15 == 0) && (side.getMenuOption() == options::battle) && (GlobalTime.getSec() != blinkedAt))
     {
 		blinkedAt = GlobalTime.getSec();
         troops.blincker();

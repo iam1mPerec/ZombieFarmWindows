@@ -80,8 +80,10 @@ protected:
     void ZombieBuffAnimation();
     void ZombieBiteAninmation();
     void healingAnimation();
-    void PopUpAnimation(int frame);
     void massHealAnimation();
+    void scaterShotAnimation(const int DMG);
+    
+    void PopUpAnimation(int frame);
     void zombieslashedAnimation(const int dmg);
     void HumanSlashedAnimation(const int position);
     
@@ -100,7 +102,6 @@ protected:
     void showDialog();
     void mapResources();
     void functional();
-    void scaterShot(const int DMG);
     void heal();
     void stun();
     void crit();

@@ -53,7 +53,7 @@ void engine::playAnimation(float fElapseTime)
 
     if (currentAnimation.isComplete()) {
         stopAnimation();
-        if (currentAnimation.onComplete) currentAnimation.onComplete();
+        if (currentAnimation.onComplete != nullptr) currentAnimation.onComplete();
     }
 }
 
