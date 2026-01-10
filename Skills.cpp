@@ -3,68 +3,68 @@
 
 using namespace std;
 
-skills::skills():
+Skills::Skills():
 splashDmg(0),
 stun(0),
-stunDur(1),
+stunCount(1),
 crit(0),
 critDmg(150),
 pirs(0),
-bleedDur(3)
+bleedCount(3)
 {
     
 }
 
-void skills::addSkills(const int SplashDmg, const int Stun, const int StunDur,
-                       const int Pirs, const int BleedDur, const int Crit, const int CritDmg)
+void Skills::addSkills(const int SplashDmg, const int Stun, const int StunCount,
+                       const int Pirs, const int BleedCount, const int Crit, const int CritDmg)
 {
     splashDmg += SplashDmg;
     
     stun      += Stun;
-    stunDur   += StunDur;
+    stunCount   += StunCount;
     
     crit      += Crit;
     critDmg   += CritDmg;
     
     pirs      += Pirs;
-    bleedDur  += BleedDur;
+    bleedCount  += BleedCount;
 }
 
-void skills::setSplashDmg(const int SplashDmg)
+void Skills::setSplashDmg(const int SplashDmg)
 {
     splashDmg += SplashDmg;
 }
-void skills::setStunChance(const int Stun)
+void Skills::setStunChance(const int Stun)
 {
     stun      += Stun;
 }
-void skills::setCritChance(const int Crit)
+void Skills::setCritChance(const int Crit)
 {
     crit      += Crit;
 }
-void skills::setPirsDmg(const int Pirs)
+void Skills::setPirsDmg(const int PirsDmg)
 {
-    pirs      += Pirs;
+    pirs      += PirsDmg;
 }
 
-int skills::getSplash()   const
+int Skills::getSplash() const
 {
     return splashDmg;
 }
-int skills::getStun()     const
+int Skills::getStun() const
 {
     return stun;
 }
-int skills::getPisrs()    const
+int Skills::getPirs() const
 {
     return pirs;
 }
-int skills::getCrit()     const
+int Skills::getCrit() const
 {
     return crit;
 }
 
-int skills::crited() const
+int Skills::crited() const
 {
     if (!crit)
     {
@@ -85,7 +85,7 @@ int skills::crited() const
     }
 }
 
-int skills::stuned() const
+int Skills::stuned() const
 {
     if (!stun)
     {
@@ -97,23 +97,11 @@ int skills::stuned() const
         int chance = rand()%101 + 1;
         if (chance <= stun)
         {
-            return stunDur;
+            return stunCount;
         }
         else
         {
             return 0;
         }
-    }
-}
-
-int skills::setBleading() const
-{
-    if (bleedDur)
-    {
-        return pirs;
-    }
-    else
-    {
-        return 0;
     }
 }

@@ -98,14 +98,12 @@ Next(nullptr)
     
     strcpy_s(description[13], selling);
     int l = unsigned(strlen(selling));
-    int len = LenOfNumbers(price);
-    
+
     int PRICE = Price;
-    
-    for (int i = len -1; i>-1; i--)
-    {
-        description[13][l+i] = (char)((int)'0') + PRICE%10;
-        PRICE /= 10;
+
+    snprintf(&description[13][l], sizeof(description[1] - l), "%d", PRICE);
+    for (int i = strlen(description[13]); i < 28; i++) {
+        description[13][i] = ' ';
     }
     
     for (int j = 0; j < 5; j++)
@@ -133,12 +131,12 @@ void item::showCount()
     if(getCount())
     {
         int len = LenOfNumbers(getCount());
-    
+
         int COUNT = getCount();
-    
+
         for (int i = 0; i < len; i++)
         {
-            pic[3][11-i] = (char)((int)'0') + COUNT%10;
+            pic[3][11 - i] = (char)((int)'0') + COUNT % 10;
             COUNT /= 10;
         }
     }

@@ -3,7 +3,7 @@
 
 using namespace std;
 
-abilities::abilities() : UnUsedPoints(0),
+Abilities::Abilities() : UnUsedPoints(0),
                          Ability_1(0),
                          Ability_2(0),
                          Ability_3(0),
@@ -13,7 +13,7 @@ abilities::abilities() : UnUsedPoints(0),
 {
 }
 
-void abilities::lvlUpAbility(const int ability)
+void Abilities::lvlUpAbility(const int ability)
 {
     if (UnUsedPoints)
     {
@@ -77,16 +77,16 @@ void abilities::lvlUpAbility(const int ability)
     }
 }
 
-abilities::~abilities()
+Abilities::~Abilities()
 {
 }
 
-bool abilities::unUsedPoint() const
+bool Abilities::unUsedPoint() const
 {
     return UnUsedPoints;
 }
 
-int abilities::getAbility(const int ability) const
+int Abilities::getAbility(const int ability) const
 {
     switch (ability)
     {
@@ -105,11 +105,11 @@ int abilities::getAbility(const int ability) const
     }
 }
 
-void abilities::addUnused()
+void Abilities::addUnused()
 {
     UnUsedPoints++;
 }
-void abilities::addUnused(const int count)
+void Abilities::addUnused(const int count)
 {
     if (count > 0)
     {

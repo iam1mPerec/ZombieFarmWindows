@@ -452,7 +452,7 @@
     <ClInclude Include="Zombie.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="eSwitchTo.h">
+    <ClInclude Include="eSkipTo.h">
       <Filter>Enums</Filter>
     </ClInclude>
   </ItemGroup>

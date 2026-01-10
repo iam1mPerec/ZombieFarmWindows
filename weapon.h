@@ -11,7 +11,7 @@ class weapon : public equipment
     
     const int stun;
     
-    const int bleed;
+    const int pirs;
     
     const int crit;
     

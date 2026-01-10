@@ -1,22 +1,22 @@
 #pragma once
 
-class skills
+class Skills
 {
     int splashDmg;
     
     int stun;
-    int stunDur;
+    int stunCount;
     
     int pirs;
-    int bleedDur;
+    int bleedCount;
     
     int crit;
     int critDmg;
     
 public:
-    skills();
-    void addSkills(const int SplashDmg, const int Stun, const int StunDur,
-                   const int Bleed, const int BleedDur, const int Crit, const int CritDmg);
+    Skills();
+    void addSkills(const int SplashDmg, const int Stun, const int StunCount,
+                   const int Bleed, const int BleedCount, const int Crit, const int CritDmg);
     
     void setSplashDmg(const int ammount);
     void setStunChance(const int ammount);
@@ -25,10 +25,9 @@ public:
     
     int getSplash()     const;
     int getStun()       const;
-    int getPisrs()      const;
+    int getPirs()      const;
     int getCrit()       const;
     
     int stuned()      const;
     int crited()      const;
-    int setBleading() const;
 };

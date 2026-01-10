@@ -627,18 +627,17 @@ void GMGameMenu::HumanSlashedAnimation(const int position)
         });
 }
 
-void GMGameMenu::whosTurn()
+void GMGameMenu::whosTurn(eSkipTo skipTo)
 {
     drawAll();
     if (horde.getHighestPriority() > troops.getHighestPriority())
     {
         if (troops.rollcall())
         {
-            if (horde.getAttacker()->getBleed())
+            if (horde.getAttacker()->getBleed() && skipTo == eSkipTo::pirs)
             {
-                zombie* Attacker = horde.getAttacker();
-                selectedZombie = horde.getAttackerPos();
-                ZombiePirsAnimation(false);
+				showQuote("The zombie is bleeding!");
+                return ZombiePirsAnimation(false);
             }
             Zselector(horde.getAttackerPos());
             side.clear();
@@ -1594,6 +1593,7 @@ void GMGameMenu::drawInventory()
     {
         for (int i = 0; i < 21; i++)
         {
+            if (troops.getUnit(y1, x1)->getPic(j, i) == '\0') break;
             screen[j + 4][i + 2] = troops.getUnit(y1, x1)->getPic(j, i);
         }
     }
@@ -1640,98 +1640,53 @@ void GMGameMenu::drawStats()
         }
     }
 
-    char statScreen[12][20] = {};
+    char statScreen[12][20] = {{' '}};
 
     strcpy_s(statScreen[0], "Stats:");
+    strcpy_s(statScreen[2], "Hp       ");
+    strcpy_s(statScreen[3], "Dmg      ");
+    strcpy_s(statScreen[4], "Def      ");
+    strcpy_s(statScreen[5], "Prior    ");
+    strcpy_s(statScreen[6], "Turns    ");
+    strcpy_s(statScreen[8], "Splash   ");
+    strcpy_s(statScreen[9], "Crit     ");
+    strcpy_s(statScreen[10], "Stun     ");
+    strcpy_s(statScreen[11], "Pirs     ");
 
-    int stat = 0;
+    auto drawNumber = [=, &statScreen](const int ROW, const int COLL, const int NUMBER) {
+        snprintf(&statScreen[ROW][COLL], sizeof(statScreen[1] - COLL), "%d", NUMBER);
+    };
+    
+    int HpStat = UNIT->getMaxHp();
+	drawNumber(2, 9, HpStat);
 
-    strcpy_s(statScreen[2], "Hp     ");
-    strcpy_s(statScreen[3], "Dmg    ");
-    strcpy_s(statScreen[4], "Def    ");
-    strcpy_s(statScreen[5], "Prior  ");
-    strcpy_s(statScreen[6], "Turns  ");
-    strcpy_s(statScreen[8], "Splash ");
-    strcpy_s(statScreen[9], "Crit   ");
-    strcpy_s(statScreen[10], "Stun   ");
-    strcpy_s(statScreen[11], "Pirs   ");
+    int DmgStat = UNIT->getDamage();
+    drawNumber(3, 9, DmgStat);
 
-    stat = UNIT->getMaxHp();
-    int COUNT = LenOfNumbers(stat);
-    for (int i = 0; i < COUNT; i++)
-    {
-        statScreen[2][12 - i] = (char)((int)'0') + stat % 10;
-        stat /= 10;
-    }
+    int DefStat = UNIT->getDef();
+    drawNumber(4, 9, DefStat);
 
-    stat = UNIT->getDamage();
-    COUNT = LenOfNumbers(stat);
-    for (int i = 0; i < COUNT; i++)
-    {
-        statScreen[3][12 - i] = (char)((int)'0') + stat % 10;
-        stat /= 10;
-    }
+    int PriorityStat = UNIT->getPriority();
+    drawNumber(5, 9, PriorityStat);
 
-    stat = UNIT->getDef();
-    COUNT = LenOfNumbers(stat);
-    for (int i = 0; i < COUNT; i++)
-    {
-        statScreen[4][12 - i] = (char)((int)'0') + stat % 10;
-        stat /= 10;
-    }
+    int MaxTurnsStat = UNIT->getMaxTurns();
+    drawNumber(6, 9, MaxTurnsStat);
+ 
+    int SplashStat = UNIT->getSplash();
+    drawNumber(8, 9, SplashStat);
 
-    stat = UNIT->getPriority();
-    COUNT = LenOfNumbers(stat);
-    for (int i = 0; i < COUNT; i++)
-    {
-        statScreen[5][12 - i] = (char)((int)'0') + stat % 10;
-        stat /= 10;
-    }
+    int CritStat = UNIT->getCrit();
+    drawNumber(9, 9, CritStat);
 
-    stat = UNIT->getMaxTurns();
-    COUNT = LenOfNumbers(stat);
-    for (int i = 0; i < COUNT; i++)
-    {
-        statScreen[6][12 - i] = (char)((int)'0') + stat % 10;
-        stat /= 10;
-    }
+    int StunStat = UNIT->getStun();
+    drawNumber(10, 9, StunStat);
 
-
-    stat = UNIT->getSplash();
-    COUNT = LenOfNumbers(stat);
-    for (int i = 0; i < COUNT; i++)
-    {
-        statScreen[8][12 - i] = (char)((int)'0') + stat % 10;
-        stat /= 10;
-    }
-
-    stat = UNIT->getCrit();
-    COUNT = LenOfNumbers(stat);
-    for (int i = 0; i < COUNT; i++)
-    {
-        statScreen[9][12 - i] = (char)((int)'0') + stat % 10;
-        stat /= 10;
-    }
-
-    stat = UNIT->getStun();
-    COUNT = LenOfNumbers(stat);
-    for (int i = 0; i < COUNT; i++)
-    {
-        statScreen[10][12 - i] = (char)((int)'0') + stat % 10;
-        stat /= 10;
-    }
-
-    stat = UNIT->getPirs();
-    COUNT = LenOfNumbers(stat);
-    for (int i = 0; i < COUNT; i++)
-    {
-        statScreen[11][12 - i] = (char)((int)'0') + stat % 10;
-        stat /= 10;
-    }
+    int PirsStat = UNIT->getPirs();
+    drawNumber(11, 9, PirsStat);
 
     if (ITEM)
     {
-        stat = ITEM->getHp();
+        int stat = ITEM->getHp();
         if (x2 < 5)
         {
             stat *= -1;
@@ -1774,23 +1729,28 @@ void GMGameMenu::drawStats()
                 }
             }
         }
+
+        auto removeNulls = [](char* str) {
+            for (int i = strlen(str); i < 14; i++) {
+                str[i] = ' ';
+            }
+		};
+
         if (stat)
         {
-            COUNT = LenOfNumbers(stat);
+            int COUNT = LenOfNumbers(stat);
             if (stat > 0)
             {
+                removeNulls(statScreen[2]);
                 statScreen[2][14] = '+';
             }
             else
             {
+                removeNulls(statScreen[2]);
                 statScreen[2][14] = '-';
                 stat *= -1;
             }
-            for (int i = COUNT; i > 0; i--)
-            {
-                statScreen[2][14 + i] = (char)((int)'0') + stat % 10;
-                stat /= 10;
-            }
+			drawNumber(2, 15, stat);
         }
 
         stat = ITEM->getDmg();
@@ -1838,21 +1798,19 @@ void GMGameMenu::drawStats()
         }
         if (stat)
         {
-            COUNT = LenOfNumbers(stat);
+            int COUNT = LenOfNumbers(stat);
             if (stat > 0)
             {
+                removeNulls(statScreen[3]);
                 statScreen[3][14] = '+';
             }
             else
             {
+                removeNulls(statScreen[3]);
                 statScreen[3][14] = '-';
                 stat *= -1;
             }
-            for (int i = COUNT; i > 0; i--)
-            {
-                statScreen[3][14 + i] = (char)((int)'0') + stat % 10;
-                stat /= 10;
-            }
+            drawNumber(3, 15, stat);
         }
 
         stat = ITEM->getDef();
@@ -1900,21 +1858,19 @@ void GMGameMenu::drawStats()
         }
         if (stat)
         {
-            COUNT = LenOfNumbers(stat);
+            int COUNT = LenOfNumbers(stat);
             if (stat > 0)
             {
+                removeNulls(statScreen[4]);
                 statScreen[4][14] = '+';
             }
             else
             {
+                removeNulls(statScreen[4]);
                 statScreen[4][14] = '-';
                 stat *= -1;
             }
-            for (int i = COUNT; i > 0; i--)
-            {
-                statScreen[4][14 + i] = (char)((int)'0') + stat % 10;
-                stat /= 10;
-            }
+            drawNumber(4, 15, stat);
         }
 
         stat = ITEM->getPriority();
@@ -1934,21 +1890,19 @@ void GMGameMenu::drawStats()
         }
         if (stat)
         {
-            COUNT = LenOfNumbers(stat);
+            int COUNT = LenOfNumbers(stat);
             if (stat > 0)
             {
+                removeNulls(statScreen[5]);
                 statScreen[5][14] = '+';
             }
             else
             {
+                removeNulls(statScreen[5]);
                 statScreen[5][14] = '-';
                 stat *= -1;
             }
-            for (int i = COUNT; i > 0; i--)
-            {
-                statScreen[5][14 + i] = (char)((int)'0') + stat % 10;
-                stat /= 10;
-            }
+            drawNumber(5, 15, stat);
         }
 
         stat = ITEM->getTurns();
@@ -1968,21 +1922,19 @@ void GMGameMenu::drawStats()
         }
         if (stat)
         {
-            COUNT = LenOfNumbers(stat);
+            int COUNT = LenOfNumbers(stat);
             if (stat > 0)
             {
+                removeNulls(statScreen[6]);
                 statScreen[6][14] = '+';
             }
             else
             {
+                removeNulls(statScreen[6]);
                 statScreen[6][14] = '-';
                 stat *= -1;
             }
-            for (int i = COUNT; i > 0; i--)
-            {
-                statScreen[6][14 + i] = (char)((int)'0') + stat % 10;
-                stat /= 10;
-            }
+            drawNumber(6, 15, stat);
         }
 
         stat = ITEM->getSplash();
@@ -2002,21 +1954,19 @@ void GMGameMenu::drawStats()
         }
         if (stat)
         {
-            COUNT = LenOfNumbers(stat);
+            int COUNT = LenOfNumbers(stat);
             if (stat > 0)
             {
+                removeNulls(statScreen[8]);
                 statScreen[8][14] = '+';
             }
             else
             {
+                removeNulls(statScreen[8]);
                 statScreen[8][14] = '-';
                 stat *= -1;
             }
-            for (int i = COUNT; i > 0; i--)
-            {
-                statScreen[8][14 + i] = (char)((int)'0') + stat % 10;
-                stat /= 10;
-            }
+            drawNumber(8, 15, stat);
             statScreen[8][15 + COUNT] = '%';
         }
 
@@ -2037,21 +1987,19 @@ void GMGameMenu::drawStats()
         }
         if (stat)
         {
-            COUNT = LenOfNumbers(stat);
+            int COUNT = LenOfNumbers(stat);
             if (stat > 0)
             {
+                removeNulls(statScreen[9]);
                 statScreen[9][14] = '+';
             }
             else
             {
+                removeNulls(statScreen[9]);
                 statScreen[9][14] = '-';
                 stat *= -1;
             }
-            for (int i = COUNT; i > 0; i--)
-            {
-                statScreen[9][14 + i] = (char)((int)'0') + stat % 10;
-                stat /= 10;
-            }
+            drawNumber(9, 15, stat);
             statScreen[9][15 + COUNT] = '%';
         }
 
@@ -2072,21 +2020,19 @@ void GMGameMenu::drawStats()
         }
         if (stat)
         {
-            COUNT = LenOfNumbers(stat);
+            int COUNT = LenOfNumbers(stat);
             if (stat > 0)
             {
+                removeNulls(statScreen[10]);
                 statScreen[10][14] = '+';
             }
             else
             {
+                removeNulls(statScreen[10]);
                 statScreen[10][14] = '-';
                 stat *= -1;
             }
-            for (int i = COUNT; i > 0; i--)
-            {
-                statScreen[10][14 + i] = (char)((int)'0') + stat % 10;
-                stat /= 10;
-            }
+            drawNumber(10, 15, stat);
             statScreen[10][15 + COUNT] = '%';
         }
 
@@ -2107,21 +2053,19 @@ void GMGameMenu::drawStats()
         }
         if (stat)
         {
-            COUNT = LenOfNumbers(stat);
+            int COUNT = LenOfNumbers(stat);
             if (stat > 0)
             {
+                removeNulls(statScreen[11]);
                 statScreen[11][14] = '+';
             }
             else
             {
+                removeNulls(statScreen[11]);
                 statScreen[11][14] = '-';
                 stat *= -1;
             }
-            for (int i = COUNT; i > 0; i--)
-            {
-                statScreen[11][14 + i] = (char)((int)'0') + stat % 10;
-                stat /= 10;
-            }
+            drawNumber(11, 15, stat);
         }
     }
 
@@ -2129,10 +2073,8 @@ void GMGameMenu::drawStats()
     {
         for (int i = 0; i < 20; i++)
         {
-            if (statScreen[j][i] != '\0')
-            {
-                screen[j + 5][i + 40] = statScreen[j][i];
-            }
+            if (statScreen[j][i] == '\0') break;
+            screen[j + 5][i + 40] = statScreen[j][i];
         }
     }
 
@@ -2180,7 +2122,7 @@ void GMGameMenu::ZombieCritAnimation(const int crit)
 	    print();
         }, [=] {
             horde.getUnit(selectedZombie)->damage(crit);
-			attack(eSwitchTo::stun);
+			attack(eSkipTo::stun);
     });
 }
 
@@ -2258,7 +2200,7 @@ void GMGameMenu::ZombieStunnedAnimation(const int stunedFor)
             if (troops.getAttacker() != nullptr && stunedFor != 0) {
                 horde.getUnit(selectedZombie)->setStunned(stunedFor);
                 drawUndead();
-                attack(eSwitchTo::pirs);
+                attack(eSkipTo::pirs);
             }
             else {
                 if (horde.exists(selectedZombie)) {
@@ -4217,7 +4159,7 @@ void GMGameMenu::splash(const int dmg, const int splash)
                     horde.getUnit(selectedZombie + 1)->damage(s);
                 }
                 drawUndead();
-                attack(eSwitchTo::slash);
+                attack(eSkipTo::slash);
             });
 
         }
@@ -4282,7 +4224,7 @@ void GMGameMenu::manipulator_Slashing(eControls controls)
 
     if (controls == eControls::SUBMIT)
     {
-        attack(eSwitchTo::crit);
+        attack(eSkipTo::crit);
 		exit = true;
     }
 
@@ -4593,37 +4535,40 @@ void GMGameMenu::massHealAnimation()
 
 void GMGameMenu::ZombiePirsAnimation(const bool setBleeding, const int dmg)
 {
+    char buff[8][9] =
+    {
+        "   |    ",
+        " |   |  ",
+        "|  |    ",
+        "  |  | |",
+        "        ",
+        "|  |  | ",
+        " |   |  ",
+        "  |    |"
+    };
+    
+    char front[4][9] =
+    {
+    " /|/|/| ",
+    " |||||| ",
+    " |||||| ",
+    " \\|\\|\\| "
+    };
+    showQuote(to_string(dmg));
+
     m_engine->startAnimation(16, 0.1f, [=] (int frame, int totalFrames) {
-        int count = 16 - frame;
-        char buff[8][9] =
-        {
-            "   |    ",
-            " |   |  ",
-            "|  |    ",
-            "  |  | |",
-            "        ",
-            "|  |  | ",
-            " |   |  ",
-            "  |    |"
-        };
-        char front[4][9] =
-        {
-        " /|/|/| ",
-        " |||||| ",
-        " |||||| ",
-        " \\|\\|\\| "
-        };
+		drawUndead();
         for (int j = 0; j < 8; j++)
         {
             for (int i = 0; i < 8; i++)
             {
-                if (j - count % 9 < 0)
+                if (j - frame % 9 < 0)
                 {
-                    CharOut(buff[j - count % 9 + 8][i], j + 6, i + 3 + selectedZombie * 11);
+                    CharOut(buff[j - frame % 9 + 8][i], j + 6, i + 3 + selectedZombie * 11);
                 }
                 else
                 {
-                    CharOut(buff[j - count % 9][i], j + 6, i + 3 + selectedZombie * 11);
+                    CharOut(buff[j - frame % 9][i], j + 6, i + 3 + selectedZombie * 11);
                 }
             }
         }
@@ -4638,22 +4583,27 @@ void GMGameMenu::ZombiePirsAnimation(const bool setBleeding, const int dmg)
                 }
             }
         }
-		drawUndead();
        
     }, [=] {
         drawUndead();
-        
-        if (troops.getAttacker() != nullptr && setBleeding) {
-            horde.getUnit(selectedZombie)->setBleeding(3, dmg);
-            attack(eSwitchTo::splash);
+        if (troops.getAttacker() == nullptr) return;
+        if (setBleeding) {
+            horde.getUnit(selectedZombie)->setBleeding(dmg, 3);
+            horde.getUnit(selectedZombie)->bleedOut();
+            attack(eSkipTo::splash);
         }
-        else if (horde.exists(selectedZombie))
+        else 
         {
+            zombie* attacker = horde.getAttacker();
             horde.getAttacker()->bleedOut();
             drawUndead();
-            if (horde.getAttacker() == nullptr)
+            if (horde.getAttacker() != attacker)
             {
                 whosTurn();
+            }
+            else
+            {
+                whosTurn(eSkipTo::slash);
             }
         }
     });
@@ -4689,7 +4639,7 @@ void GMGameMenu::stun(const int stun)
 
 void GMGameMenu::pirs(const int pirs)
 {
-    ZombiePirsAnimation(true);
+    ZombiePirsAnimation(true, pirs);
 }
 
 void GMGameMenu::slash(const int dmg)
@@ -4703,7 +4653,7 @@ void GMGameMenu::crit(const int crit)
     ZombieCritAnimation(critDmg);
 }
 
-void GMGameMenu::attack(eSwitchTo switchTo)
+void GMGameMenu::attack(eSkipTo switchTo)
 {
     clear();
     drawAll();
@@ -4713,22 +4663,22 @@ void GMGameMenu::attack(eSwitchTo switchTo)
 	int CRIT, STUN, PIRS, SPLASH, DMG;
 
     switch (switchTo) {
-        case eSwitchTo::crit:
+        case eSkipTo::crit:
             CRIT = troops.getAttacker()->getCrited();
             if (CRIT) return crit(CRIT);
             [[fallthrough]];
         
-        case eSwitchTo::stun:
+        case eSkipTo::stun:
             STUN = troops.getAttacker()->getStuned();
             if (STUN) return stun(STUN);
             [[fallthrough]];
 
-        case eSwitchTo::pirs:
+        case eSkipTo::pirs:
             PIRS = troops.getAttacker()->getPirs();
             if (PIRS) return pirs(PIRS);
             [[fallthrough]];
 
-        case eSwitchTo::splash:
+        case eSkipTo::splash:
             SPLASH = troops.getAttacker()->getSplash();
             DMG = troops.getAttacker()->getDamage();
             if (SPLASH) return splash(DMG, SPLASH);
@@ -5427,8 +5377,7 @@ GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
         troops.addSolder(0, 1, 10);
         troops.addSolder(0, 2, 10);
 
-        items.addItem(loader.chest(Chest::SharpEdge));
-        items.addItem(loader.weapon(Weapon::RustyShovel));
+        items.addItem(loader.helmet(Helmet::Lunatic));
         items.addItem(loader.helmet(Helmet::UltraGoggles));
 
         items.addItem(loader.potion(Potion::Lotion, 25));

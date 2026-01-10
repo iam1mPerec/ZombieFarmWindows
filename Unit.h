@@ -24,11 +24,11 @@ protected:
     int  blinck;
     bool alive;
     
-    skills skills;
+	Skills skills;
     buffs  buff;
     Equip  equipment;
     deBuff debuff;
-    abilities abilities;
+	Abilities abilities;
     
     int turn;
     int maxTurns;
@@ -37,7 +37,7 @@ protected:
     
 public:
     unit();
-    unit(const enum title type);
+    unit(const enum title Type);
     virtual void  stat();
     virtual void create();
     

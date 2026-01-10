@@ -193,7 +193,7 @@ void zombie::stunedOut()
 
 void zombie::bleedOut()
 {
-    hp -= debuff.getBleedCount();
+    hp -= debuff.getBleed();
     if (hp <= 0)
     {
         type = wasted;
@@ -208,9 +208,9 @@ void zombie::setTurnsTo0()
     turn = 0;
 }
 
-void zombie::setBleeding(const int Bleed, const int Dmg)
+void zombie::setBleeding(const int DMG, const int COUNT)
 {
-    debuff.setBleeding(Bleed, Dmg);
+    debuff.setBleeding(DMG, COUNT);
 }
 
 void zombie::setStunned (const int Stun)
@@ -226,11 +226,6 @@ int zombie::getStun()      const
 int zombie::getBleed()     const
 {
     return debuff.getBleed();
-}
-
-int zombie::getBleedDmg()  const
-{
-    return debuff.getBleedCount() * debuff.getBleed();
 }
 
 int zombie::getBleedCount()  const

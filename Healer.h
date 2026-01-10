@@ -8,5 +8,4 @@ public:
     healer(const int LVL, const int HP);
     void stat();
     void create();
-    void picture();
 };

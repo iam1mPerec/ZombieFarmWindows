@@ -1,6 +1,6 @@
 #pragma once
 
-class abilities
+class Abilities
 {
     int UnUsedPoints;
     int Ability_1;
@@ -11,11 +11,11 @@ class abilities
     const int MaxLvl;
     
 public:
+    Abilities();
     bool unUsedPoint() const;
     int  getAbility(const int ability)  const;
     void  lvlUpAbility(const int ability);
     void addUnused();
     void addUnused(const int count);
-    abilities();
-    ~abilities();
+    ~Abilities();
 };

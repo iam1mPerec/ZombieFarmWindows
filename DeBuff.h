@@ -3,7 +3,7 @@
 class deBuff
 {
     int stun;
-    int bleed;
+    int bleedDmg;
     int bleedCount;
     
 public:
@@ -12,7 +12,7 @@ public:
     int getBleedCount() const;
     
     void setStunned(const int Stun);
-    void setBleeding(const int Bleed, const int Count);
+    void setBleeding(const int BleedDmg, const int BleedCount);
     
     void bleedOut();
     void BeStunned();

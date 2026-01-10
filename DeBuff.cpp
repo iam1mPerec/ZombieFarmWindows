@@ -5,7 +5,7 @@ using namespace std;
 
 deBuff::deBuff():
 stun(0),
-bleed(0),
+bleedDmg(0),
 bleedCount(0)
 {
     
@@ -13,7 +13,7 @@ bleedCount(0)
 
 int deBuff::getBleed() const
 {
-    return bleed;
+    return bleedDmg;
 }
 
 int deBuff::getBleedCount() const
@@ -26,10 +26,10 @@ int deBuff::getStun() const
     return stun;
 }
 
-void deBuff::setBleeding(const int Bleed, const int Count)
+void deBuff::setBleeding(const int DMG, const int COUNT)
 {
-    bleed      = Bleed;
-    bleedCount = Count;
+    bleedDmg = DMG;
+    bleedCount = COUNT;
 }
 
 void deBuff::setStunned(const int Stun)
@@ -39,11 +39,11 @@ void deBuff::setStunned(const int Stun)
 
 void deBuff::bleedOut()
 {
-    bleed--;
+    --bleedCount;
     
-    if (bleed <= 0)
+    if (bleedCount <= 0)
     {
-        bleed = 0;
+        bleedDmg = 0;
         bleedCount = 0;
     }
 }

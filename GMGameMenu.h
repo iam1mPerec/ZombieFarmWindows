@@ -27,7 +27,7 @@
 #include "ItemLoader.h"
 #include "GMBase.h"
 #include "eControls.h"
-#include "eSwitchTo.h"
+#include "eSkipTo.h"
 
 class GMGameMenu :
     public GMBase
@@ -116,7 +116,7 @@ protected:
     void load();
     void clear();
     void hide();
-    void attack(eSwitchTo switchTo = eSwitchTo::crit);
+    void attack(eSkipTo switchTo = eSkipTo::crit);
     void splash(const int dmg, const int splash);
     void drawInventory();
     void drawStats();
@@ -128,7 +128,7 @@ protected:
     void addUnit();
     void drawAll();
     void drawUndead();
-    void whosTurn();
+    void whosTurn(eSkipTo skipTo = eSkipTo::pirs);
     void drawDescription();
     void setUndead();
     bool checkWasted()         const;

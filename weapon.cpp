@@ -5,14 +5,14 @@
 using namespace std;
 
 weapon::weapon(const int Atk, const int Turns, const int Crit, const int SplashDmg,
-               const int Stun, const int Bleed,const int Price, const int Restriction):
+               const int Stun, const int Pirs, const int Price, const int Restriction):
 equipment(Price, Restriction),
 atk(Atk),
 crit(Crit),
 turns(Turns),
 splashDmg(SplashDmg),
 stun(Stun),
-bleed(Bleed)
+pirs(Pirs)
 {
     fillTitle("Weapon");
 }
@@ -39,5 +39,5 @@ int  weapon::getSplash()    const
 }
 int  weapon::getPirs()      const
 {
-    return bleed;
+    return pirs;
 }

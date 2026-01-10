@@ -36,12 +36,11 @@ protected:
 public:
     zombie(zombies Type,const int lvl);
     
-    void setBleeding(const int Bleed, const int Dmg);
+    void setBleeding(const int DMG, const int COUNT);
     void setStunned (const int Stun);
     
     int getStun()       const;
     int getBleed()      const;
-    int getBleedDmg()   const;
     int getBleedCount() const;
     
     void stunedOut();

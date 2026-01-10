@@ -1,6 +1,6 @@
 #pragma once
 
-enum class eSwitchTo {
+enum class eSkipTo {
     crit,
     stun,
     pirs,

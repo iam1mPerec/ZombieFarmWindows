@@ -21,7 +21,7 @@ Deadly$Scalpel
 21
 275
 4
-This is a tine weapon    ^ 
+This is a tiny weapon    ^ 
 that can bring a whole   ^
 lot of pain              ^
 $

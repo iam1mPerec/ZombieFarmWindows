@@ -391,7 +391,7 @@ int   unit::getStun()      const
 }
 int   unit::getPirs()      const
 {
-    return skills.getPisrs();
+    return skills.getPirs();
 }
 
 int unit::getTurn() const
@@ -533,12 +533,10 @@ void unit::lvl_up_ability(const int ability)
                     break;
                 case 3:
                     abilities.lvlUpAbility(3);
-                    //способность добаляет 15% к шансу крита и 30% к урону от крита
                     skills.addSkills(0, 0, 0, 0, 0, 15, 30);
                     break;
                 case 4:
                     abilities.lvlUpAbility(4);
-                    //добавляет 10% сплешь урона
                     skills.addSkills(10, 0, 0, 0, 0, 0, 0);
                     break;
                 case 5:
