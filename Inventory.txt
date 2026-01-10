@@ -1,5 +1,4 @@
-Chest Sharp$Edge
-Weapon Rusty$Shovel
+Helmet Lunatic
 Helmet Ultra$Goggles
 Potion Small$Potion
 Bomb Nuke

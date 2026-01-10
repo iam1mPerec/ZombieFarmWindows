@@ -4392,6 +4392,8 @@ void GMGameMenu::healingAnimation()
         print();
         }, [this]{
 			drawAll();
+            whosTurn();
+            selector();
     });
     
 }
@@ -4791,6 +4793,7 @@ void GMGameMenu::manipulator_Choosing(eControls controls)
             clear();
             if (troops.getUnit(y1, x1)->IsAlive() && !revive)
             {
+				showQuote("Healed for " + to_string(troops.getAttacker()->getAbility(3) * 100) + " HP");
                 troops.getUnit(y1, x1)->HpUp(troops.getAttacker()->getAbility(3) * 100);
                 troops.getAttacker()->usedTurn();
                 side.setMenuOption(options::attacking);
@@ -4798,8 +4801,7 @@ void GMGameMenu::manipulator_Choosing(eControls controls)
                 drawAll();
                 drawUndead();
                 healingAnimation();
-                whosTurn();
-                selector();
+                
             }
             else if (!troops.getUnit(y1, x1)->IsAlive() && !revive)
             {
@@ -4819,8 +4821,6 @@ void GMGameMenu::manipulator_Choosing(eControls controls)
                 drawAll();
                 drawUndead();
                 healingAnimation();
-                whosTurn();
-                selector();
             }
             else
             {
