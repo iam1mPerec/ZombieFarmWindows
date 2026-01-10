@@ -3642,15 +3642,10 @@ void GMGameMenu::use(item* item, char* name, unit* unit, bool& exit)
             if (unit->IsDamaged())
             {
                 side.setMenuOption(attacking);
-                unit->usedTurn();
                 exit = true;
-                clear();
-                drawAll();
-                drawUndead();
-                healingAnimation();
                 unit->HpUp(item->getProperty());
                 item->consume();
-                whosTurn();
+                healingAnimation();
             }
             else
             {
@@ -3662,9 +3657,6 @@ void GMGameMenu::use(item* item, char* name, unit* unit, bool& exit)
             side.setMenuOption(attacking);
             unit->usedTurn();
             exit = true;
-            clear();
-            drawAll();
-            drawUndead();
             item->consume();
             scaterShotAnimation(item->getProperty());
         }
@@ -3675,13 +3667,9 @@ void GMGameMenu::use(item* item, char* name, unit* unit, bool& exit)
                 side.setMenuOption(attacking);
                 unit->usedTurn();
                 exit = true;
-                clear();
-                drawAll();
-                drawUndead();
-                massHealAnimation();
                 massHeal(item->getProperty());
                 item->consume();
-                whosTurn();
+                massHealAnimation();
             }
             else
             {
@@ -4391,9 +4379,10 @@ void GMGameMenu::healingAnimation()
         }
         print();
         }, [this]{
+			troops.getAttacker()->usedTurn();
 			drawAll();
-            whosTurn();
-            selector();
+			whosTurn();
+			selector();
     });
     
 }
@@ -4641,7 +4630,7 @@ void GMGameMenu::stun(const int stun)
 
 void GMGameMenu::pirs(const int pirs)
 {
-    ZombiePirsAnimation(true, pirs);
+    ZombiePirsAnimation(true);
 }
 
 void GMGameMenu::slash(const int dmg)
@@ -4790,18 +4779,12 @@ void GMGameMenu::manipulator_Choosing(eControls controls)
         }
         else
         {
-            clear();
             if (troops.getUnit(y1, x1)->IsAlive() && !revive)
             {
-				showQuote("Healed for " + to_string(troops.getAttacker()->getAbility(3) * 100) + " HP");
                 troops.getUnit(y1, x1)->HpUp(troops.getAttacker()->getAbility(3) * 100);
-                troops.getAttacker()->usedTurn();
                 side.setMenuOption(options::attacking);
                 exit = true;
-                drawAll();
-                drawUndead();
                 healingAnimation();
-                
             }
             else if (!troops.getUnit(y1, x1)->IsAlive() && !revive)
             {
@@ -4814,12 +4797,9 @@ void GMGameMenu::manipulator_Choosing(eControls controls)
                 troops.getUnit(y1, x1)->revive();
                 int hp = (troops.getUnit(y1, x1)->getMaxHp() * (10 * troops.getAttacker()->getAbility(5))) / 100;
                 troops.getUnit(y1, x1)->HpUp(hp);
-                troops.getAttacker()->usedTurn();
                 side.setMenuOption(options::attacking);
                 exit = true;
                 revive = false;
-                drawAll();
-                drawUndead();
                 healingAnimation();
             }
             else
@@ -4895,14 +4875,9 @@ void GMGameMenu::manipulator_firstAid(eControls controls)
         {
             usable->consume();
             troops.getUnit(y1, x1)->HpUp(usable->getProperty());
-            troops.getAttacker()->usedTurn();
             side.setMenuOption(options::attacking);
-            drawAll();
-            drawUndead();
-            healingAnimation();
-            whosTurn();
-            selector();
             exit = true;
+            healingAnimation();
         }
         else if (troops.getUnit(y1, x1)->IsAlive() && !revive && !troops.getUnit(y1, x1)->IsDamaged())
         {
@@ -4920,15 +4895,10 @@ void GMGameMenu::manipulator_firstAid(eControls controls)
         {
             troops.getUnit(y1, x1)->revive();
             troops.getUnit(y1, x1)->HpUp(usable->getProperty());
-            troops.getAttacker()->usedTurn();
             side.setMenuOption(options::attacking);
             exit = true;
             revive = false;
-            drawAll();
-            drawUndead();
             healingAnimation();
-            whosTurn();
-            selector();
         }
         else
         {

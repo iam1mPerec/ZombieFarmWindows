@@ -95,7 +95,7 @@ void engine::signalKeyPressed()
 bool engine::OnUserUpdate(float fElapsedTime) {
     //MARK: - Handle input
     if (!locked) {
-        if (m_keys[VK_ACCEPT].bPressed || m_keys[L'F'].bPressed) {
+        if (m_keys[VK_RETURN].bPressed || m_keys[L'F'].bPressed) {
             signalKeyPressed();
             m_mode->controlSignal(eControls::SUBMIT);
         }
