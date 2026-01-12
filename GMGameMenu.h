@@ -48,6 +48,7 @@ protected:
     bool capture;
     bool selling;
     bool revive;
+    bool isFirstAid;
     bool NightRaid;
 
     events_list   list;

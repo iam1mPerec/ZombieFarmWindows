@@ -1407,6 +1407,7 @@ void GMGameMenu::drawInventory()
 {
     clear();
     items.Check4Dead();
+	unit* unit = battle ? troops.getAttacker() : troops.getUnit(y1, x1);
 
     char emptyPic[5][14] =
     {
@@ -1449,13 +1450,13 @@ void GMGameMenu::drawInventory()
         }
     }
 
-    if (troops.getUnit(y1, x1)->getHelmet())
+    if (unit->getHelmet())
     {
         for (int j = 0; j < 5; j++)
         {
             for (int i = 0; i < 13; i++)
             {
-                screen[j + 4][i + 26] = troops.getUnit(y1, x1)->getHelmet()->getPic(j, i);
+                screen[j + 4][i + 26] = unit->getHelmet()->getPic(j, i);
             }
         }
     }
@@ -1477,13 +1478,13 @@ void GMGameMenu::drawInventory()
         }
     }
 
-    if (troops.getUnit(y1, x1)->getChest())
+    if (unit->getChest())
     {
         for (int j = 0; j < 5; j++)
         {
             for (int i = 0; i < 13; i++)
             {
-                screen[j + 9][i + 26] = troops.getUnit(y1, x1)->getChest()->getPic(j, i);
+                screen[j + 9][i + 26] = unit->getChest()->getPic(j, i);
             }
         }
     }
@@ -1505,13 +1506,13 @@ void GMGameMenu::drawInventory()
         }
     }
 
-    if (troops.getUnit(y1, x1)->getGloves())
+    if (unit->getGloves())
     {
         for (int j = 0; j < 5; j++)
         {
             for (int i = 0; i < 13; i++)
             {
-                screen[j + 14][i + 26] = troops.getUnit(y1, x1)->getGloves()->getPic(j, i);
+                screen[j + 14][i + 26] = unit->getGloves()->getPic(j, i);
             }
         }
     }
@@ -1533,13 +1534,13 @@ void GMGameMenu::drawInventory()
         }
     }
 
-    if (troops.getUnit(y1, x1)->getBoots())
+    if (unit->getBoots())
     {
         for (int j = 0; j < 5; j++)
         {
             for (int i = 0; i < 13; i++)
             {
-                screen[j + 14][i + 14] = troops.getUnit(y1, x1)->getBoots()->getPic(j, i);
+                screen[j + 14][i + 14] = unit->getBoots()->getPic(j, i);
             }
         }
     }
@@ -1561,13 +1562,13 @@ void GMGameMenu::drawInventory()
         }
     }
 
-    if (troops.getUnit(y1, x1)->getWeapon())
+    if (unit->getWeapon())
     {
         for (int j = 0; j < 5; j++)
         {
             for (int i = 0; i < 13; i++)
             {
-                screen[j + 14][i + 2] = troops.getUnit(y1, x1)->getWeapon()->getPic(j, i);
+                screen[j + 14][i + 2] = unit->getWeapon()->getPic(j, i);
             }
         }
     }
@@ -1593,8 +1594,8 @@ void GMGameMenu::drawInventory()
     {
         for (int i = 0; i < 21; i++)
         {
-            if (troops.getUnit(y1, x1)->getPic(j, i) == '\0') break;
-            screen[j + 4][i + 2] = troops.getUnit(y1, x1)->getPic(j, i);
+            if (unit->getPic(j, i) == '\0') break;
+            screen[j + 4][i + 2] = unit->getPic(j, i);
         }
     }
     drawDescription();
@@ -3500,6 +3501,7 @@ void GMGameMenu::manipulator_Inventory(eControls controls)
 
     if (controls == eControls::SUBMIT)
     {
+		selectedZombie = -1;
         if (x2 > 4)
         {
             if (items.getItem((x2 - 5) + y2 * 18))
@@ -3529,6 +3531,7 @@ void GMGameMenu::manipulator_Inventory(eControls controls)
                     equip(Item, dbuff, Unit, exit);
                     break;
                 case consumables:
+					isFirstAid = false;
                     use(Item, dbuff, Unit, exit);
                     break;
                 default:
@@ -3586,9 +3589,15 @@ void GMGameMenu::manipulator_Inventory(eControls controls)
     else if (exit && battle)
     {
         clear();
-        drawAll();
         drawUndead();
+		zombieSelector();
         whosTurn();
+        if (isFirstAid) {
+            drawAll();
+            x1 = 0;
+			y1 = 0;
+            choose(x1, y1);
+        }
     }
     else
     {
@@ -3641,8 +3650,8 @@ void GMGameMenu::use(item* item, char* name, unit* unit, bool& exit)
         {
             if (unit->IsDamaged())
             {
-                side.setMenuOption(attacking);
                 exit = true;
+                side.setMenuOption(attacking);
                 unit->HpUp(item->getProperty());
                 item->consume();
                 healingAnimation();
@@ -3654,9 +3663,9 @@ void GMGameMenu::use(item* item, char* name, unit* unit, bool& exit)
         }
         if (equals(name, "Grenade"))
         {
+            exit = true;
             side.setMenuOption(attacking);
             unit->usedTurn();
-            exit = true;
             item->consume();
             scaterShotAnimation(item->getProperty());
         }
@@ -3664,9 +3673,9 @@ void GMGameMenu::use(item* item, char* name, unit* unit, bool& exit)
         {
             if (!troops.allHealed())
             {
+                exit = true;
                 side.setMenuOption(attacking);
                 unit->usedTurn();
-                exit = true;
                 massHeal(item->getProperty());
                 item->consume();
                 massHealAnimation();
@@ -3678,41 +3687,26 @@ void GMGameMenu::use(item* item, char* name, unit* unit, bool& exit)
         }
         if (equals(name, "Bomb"))
         {
+            exit = true;
             usable = item;
-			selectedZombie = 0;
             side.setMenuOption(bombing);
-            clear();
-            drawAll();
-            drawUndead();
-            selector();
-            zombieSelector();
-            show();
+			selectedZombie = 0;
         }
         if (equals(name, "Revive"))
         {
-            resetVariables();
+            exit = true;
             revive = true;
+            isFirstAid = true;
             usable = item;
             side.setMenuOption(firstAid);
-            clear();
-            drawAll();
-            drawUndead();
-            choose(x1, y1);
-            print();
-            show();
         }
         if (equals(name, "Bandages"))
         {
-            resetVariables();
-            usable = item;
+            exit = true;
             revive = false;
+            isFirstAid = true;
+            usable = item;
             side.setMenuOption(firstAid);
-            clear();
-            drawAll();
-            drawUndead();
-            choose(x1, y1);
-            print();
-            show();
         }
     }
     else
@@ -4238,34 +4232,34 @@ void GMGameMenu::manipulator_Bombing(eControls controls)
 
     if (controls == eControls::LEFT)
     {
-        x1--;
-        if (x1 < 0)
+        selectedZombie--;
+        if (selectedZombie < 0)
         {
-            x1 = last;
+            selectedZombie = last;
         }
-        while (horde.getUnit(x1)->getType() == wasted)
+        while (horde.getUnit(selectedZombie)->getType() == wasted)
         {
-            x1--;
-            if (x1 < 0)
+            selectedZombie--;
+            if (selectedZombie < 0)
             {
-                x1 = last;
+                selectedZombie = last;
             }
         }
     }
 
     if (controls == eControls::RIGHT)
     {
-        x1++;
-        if (x1 > last)
+        selectedZombie++;
+        if (selectedZombie > last)
         {
-            x1 = 0;
+            selectedZombie = 0;
         }
-        while (horde.getUnit(x1)->getType() == wasted)
+        while (horde.getUnit(selectedZombie)->getType() == wasted)
         {
-            x1++;
-            if (x1 > last)
+            selectedZombie++;
+            if (selectedZombie > last)
             {
-                x1 = 0;
+                selectedZombie = 0;
             }
         }
     }
@@ -4285,7 +4279,6 @@ void GMGameMenu::manipulator_Bombing(eControls controls)
         usable->consume();
         zombieSlashedAnimation(usable->getProperty());
         splash(usable->getProperty(), 50);
-        troops.getAttacker()->usedTurn();
         side.setMenuOption(attacking);
         resetVariables();
         whosTurn();
@@ -4295,9 +4288,11 @@ void GMGameMenu::manipulator_Bombing(eControls controls)
 
     if (!exit)
     {
+        clear();
         drawAll();
-        zombieSelector();
         selector();
+        drawUndead();
+        zombieSelector();
     }
     else
     {
@@ -5256,6 +5251,7 @@ GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
     revive(false),
     selling(false),
     battle(false),
+	isFirstAid(false),
     store(wood),
     capture(false),
     usable(nullptr),
@@ -5353,6 +5349,7 @@ GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
         items.addItem(loader.potion(Potion::Lotion, 25));
         items.addItem(loader.bomb(Bomb::Nuke, 20));
         items.addItem(loader.grenade(Grenade::Nova, 25));
+        items.addItem(loader.bandages(Bandages::OldStrips, 20));
 
         mapResources();
         showTime();
