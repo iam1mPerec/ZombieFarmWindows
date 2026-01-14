@@ -657,7 +657,7 @@ return aloc;
 
 class potion* itemLoader::potion  (const int type, const int Count)
 {
-    ifstream LoadFile("consumables/Potion.txt");
+    ifstream LoadFile("Consumables/Potion.txt");
     
     class potion* aloc;
     
@@ -714,7 +714,7 @@ class potion* itemLoader::potion  (const int type, const int Count)
 
 class kit* itemLoader::kit     (const int type, const int Count)
 {
-    ifstream LoadFile("consumables/Kit.txt");
+    ifstream LoadFile("Consumables/Kit.txt");
     
     class kit* aloc;
     
@@ -770,7 +770,7 @@ class kit* itemLoader::kit     (const int type, const int Count)
 }
 class bandages* itemLoader::bandages(const int type, const int Count)
 {
-    ifstream LoadFile("consumables/Bandages.txt");
+    ifstream LoadFile("Consumables/Bandages.txt");
     
     class bandages* aloc;
     
@@ -826,7 +826,7 @@ class bandages* itemLoader::bandages(const int type, const int Count)
 }
 class revive* itemLoader::revive   (const int type, const int Count)
 {
-    ifstream LoadFile("consumables/Revive.txt");
+    ifstream LoadFile("Consumables/Revive.txt");
     
     class revive* aloc;
     
@@ -883,7 +883,7 @@ class revive* itemLoader::revive   (const int type, const int Count)
 
 class grenade* itemLoader::grenade (const int type, const int Count)
 {
-    ifstream LoadFile("consumables/Grenade.txt");
+    ifstream LoadFile("Consumables/Grenade.txt");
     
     class grenade* aloc;
     
@@ -940,7 +940,7 @@ class grenade* itemLoader::grenade (const int type, const int Count)
 
 class bomb* itemLoader::bomb       (const int type, const int Count)
 {
-    ifstream LoadFile("consumables/Bomb.txt");
+    ifstream LoadFile("Consumables/Bomb.txt");
     
     class bomb* aloc;
     
