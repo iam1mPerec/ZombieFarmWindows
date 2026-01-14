@@ -19,14 +19,12 @@ public:
     plant(field &MField,char** M,const int Size, dialogBox &Box, enum plants type);
     plant(field &MField,char** M,const int Size, dialogBox &Box, enum plants type, int pday, int phour, int pmin);
     void create(field &MField,char** M,const int Size, dialogBox &Box, enum plants type, int pday, int phour, int pmin);
-    char *getName();
     int  getReward();
     int  getAmmount();
     int  getCost();
     int getOption() const;
     void Del();
-    void triger();
-    void doneFalse();
+    void triger() override;
     bool show_progress() const;
     char ** getMatrix();
 };

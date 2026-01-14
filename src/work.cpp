@@ -78,6 +78,11 @@ int work::getOption() const
     return option;
 }
 
+bool work::show_progress() const
+{
+    return !done;
+}
+
 void work::triger()
 {
     done = true;

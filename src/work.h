@@ -18,8 +18,7 @@ public:
     work(farmer * f, dialogBox &Box, enum jobs type, resources &Res);
     work(farmer * f, dialogBox &Box, enum jobs type, resources &Res, int day, int hour, int min);
     void create(farmer * f, dialogBox &Box, enum jobs type, resources &Res);
-    char** getName(const int i) const;
-    void triger();
+    void triger() override;
     void Del();
     int getOption() const;
 };

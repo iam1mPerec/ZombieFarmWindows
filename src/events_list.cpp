@@ -344,7 +344,7 @@ void events_list::check4Dead()
             
             for (int i = 0; i<count; i++)
             {
-                if ((!aloc->getDay() && !aloc->getHour() && !aloc->getMin() && !aloc->getSec()) && !aloc->show_progress())
+                if (!aloc->getDay() && !aloc->getHour() && !aloc->getMin() && !aloc->show_progress())
                 {
                     deleteNode(aloc);
                 }

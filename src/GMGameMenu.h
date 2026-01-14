@@ -34,6 +34,7 @@ class GMGameMenu :
 {
 protected:
     int farmerShownAt;
+	int lastTick;
 	int blinkedAt;
     int SidePlank;
     int BottomPlank;

@@ -222,14 +222,9 @@ int plant::getAmmount()
     return ammount;
 }
 
-void plant::doneFalse()
-{
-    done = false;
-}
-
 void plant::triger()
 {
-    done = true;
+	done = true;
     pDay  = 0;
     pHour = 0;
     pMin  = 0;
@@ -273,7 +268,7 @@ int plant::getReward()
 
 bool plant::show_progress() const
 {
-    return done;
+    return true;
 }
 
 int plant::getCost()

@@ -161,6 +161,11 @@ int building::getOption() const
     return option;
 }
 
+bool building::show_progress() const
+{
+    return !done;
+}
+
 void building::set_option(structures i)
 {
     option = i;

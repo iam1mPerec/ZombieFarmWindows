@@ -4,51 +4,46 @@
 
 using namespace std;
 
-event::event()
-{
-}
+event::event():
+    pDay(0),
+    pHour(0),
+    pMin(0),
+    priority(0),
+    done(false),
+    plant(false),
+    Next(nullptr),
+	name(nullptr)
+{}
 
 char * event::getHeader()
 {
     return header;
 }
 
-void event::in_progress(float fElapsedTime)
+void event::update(int tick)
 {
-    if(!done)
+    if (done) return;
+	pMin -= tick;
+    if (pMin < 0)
     {
-        pSec -= 60 * fElapsedTime;
-        
-        if(pSec <= 0)
+        pMin = 59;
+        pHour -= 1;
+
+        if (pHour < 0)
         {
-            pSec  = 60;
-            pMin -= 1;
-            
-                if (pMin < 0)
-                {
-                    pMin   = 59;
-                    pSec   = 60;
-                    pHour -= 1;
-                    
-                    if(pHour < 0)
-                    {
-                        pHour = 23;
-                        pMin  = 59;
-                        pSec  = 60;
-                        pDay -= 1;
-                        
-                        if(pDay < 0)
-                        {
-                            pDay  = 0;
-                            pHour = 0;
-                            pMin  = 0;
-                            pSec  = 0;
-                            triger();
-                        }
-                    }
-                }
+            pHour = 23;
+            pMin = 59;
+            pDay -= 1;
+
+            if (pDay < 0)
+            {
+                pDay = 0;
+                pHour = 0;
+                pMin = 0;
+                triger();
             }
         }
+    }
 }
 
 void event::Del()
@@ -73,10 +68,6 @@ int event::getHour() const
 int event::getMin() const
 {
     return pMin;
-}
-int event::getSec() const
-{
-    return pSec;
 }
 void event::setNext(event* new_event)
 {
@@ -103,7 +94,7 @@ char ** event::getMatrix()
 
 bool event::show_progress() const
 {
-    return 0;
+    return false;
 }
 int event::getAmmount()
 {
@@ -116,8 +107,4 @@ int event::getCost()
 int event::getReward()
 {
     return 0;
-}
-void event::triger()
-{
-    
 }

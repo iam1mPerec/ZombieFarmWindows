@@ -18,8 +18,9 @@ public:
     events_list();
     event * listing(const int l);
     event * getHead();
-    void AddPlant(field &MField,char** M,const int Size, dialogBox &Box, enum plants type);
-    void AddPlant(field &MField,char** M,const int Size, dialogBox &Box, enum plants type, int pday, int phour, int pmin);
+    
+    void AddPlant(field& MField, char** M, const int Size, dialogBox& Box, enum plants plant_type);
+    void AddPlant(field& MField, char** M, const int Size, dialogBox& Box, enum plants plant_type, int pday, int phour, int pmin);
     
     void AddBuilding(field &MField, farmer * f, dialogBox &Box,
                      structures building_type, constructions &possession, char** ar);

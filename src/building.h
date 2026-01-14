@@ -27,5 +27,6 @@ public:
     farmer * getFarmer();
     structures get_option();
     int getOption() const;
-    void triger();
+	bool show_progress() const override;
+    void triger() override;
 };

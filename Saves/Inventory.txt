@@ -1,2 +1,6 @@
 Helmet Lunatic
 Helmet Ultra$Goggles
+Potion Small$Potion
+Bomb Nuke
+Grenade Pineapple
+Bandages Old$Strips

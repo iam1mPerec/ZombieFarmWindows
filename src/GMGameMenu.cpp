@@ -2320,6 +2320,10 @@ void GMGameMenu::functional()
 		farmerShownAt = GlobalTime.getSec();
         farmerAnimation.show();
     }
+    if (lastTick != GlobalTime.getSec()) {
+		lastTick = GlobalTime.getSec();
+        progress.showProgress(1);
+    }
     showDialog();
     showTime();
     showSide();
@@ -2375,7 +2379,7 @@ void GMGameMenu::manipulator_Capture(eControls controls)
         if (!checkSpase())
         {
             MyField.showField();
-            Dial.AddQuote("You are out of space boddy");
+            Dial.AddQuote("You are out of space");
             side.setMenuOption(planting);
         }
         else if (checkSpase() * (plant + 1) > Res.getSeeds())
@@ -5239,6 +5243,7 @@ GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
     NightRaid(0),
     farmerShownAt(0),
     blinkedAt(0),
+	lastTick(0),
     farmerAnimation(screen, MyField, list, Res, Dial),
     stock(Dial),
     plant(potato),
@@ -5647,7 +5652,6 @@ void GMGameMenu::controlSignal(eControls controls)
 void GMGameMenu::Update(float fElapsedTime)
 {
     GlobalTime.fly(fElapsedTime);
-    progress.showProgress(fElapsedTime);
     functional();
     show();
 }

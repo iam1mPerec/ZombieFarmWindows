@@ -30,7 +30,7 @@ void ProgressMenu::clear()
     }
 }
 
-void ProgressMenu::showProgress(float fElapsedTime)
+void ProgressMenu::showProgress(int tick)
 {
     clear();
     events.check4Dead();
@@ -56,10 +56,10 @@ void ProgressMenu::showProgress(float fElapsedTime)
             screen[j+5][i+SidePlank+2] = menu[j][i];
         }
     }
-    showTimer(fElapsedTime);
+    showTimer(tick);
 }
 
-void ProgressMenu::showTimer(float fElapsedTime)
+void ProgressMenu::showTimer(int tick)
 {
     if (events.getCount()>0)
     {
@@ -78,7 +78,6 @@ void ProgressMenu::showTimer(float fElapsedTime)
                 screen[i*2+5][y-4]  = (char)((int)'0')+aloc->getMin()/10;
                 screen[i*2+5][y-3]  = (char)((int)'0')+aloc->getMin()%10;
             }
-            
             else
             {
                 screen[i*2+5][y-6] = 'd';
@@ -86,7 +85,7 @@ void ProgressMenu::showTimer(float fElapsedTime)
                 screen[i*2+5][y-4] = 'n';
                 screen[i*2+5][y-3] = 'e';
             }
-            aloc->in_progress(fElapsedTime);
+            aloc->update(tick);
             aloc = aloc->getNext();
         }
     }
