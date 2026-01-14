@@ -18,7 +18,8 @@ public:
     work(farmer * f, dialogBox &Box, enum jobs type, resources &Res);
     work(farmer * f, dialogBox &Box, enum jobs type, resources &Res, int day, int hour, int min);
     void create(farmer * f, dialogBox &Box, enum jobs type, resources &Res);
-    void triger() override;
     void Del();
     int getOption() const;
+	bool show_progress() const override;
+    void triger() override;
 };

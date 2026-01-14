@@ -2320,8 +2320,8 @@ void GMGameMenu::functional()
 		farmerShownAt = GlobalTime.getSec();
         farmerAnimation.show();
     }
-    if (lastTick != GlobalTime.getSec()) {
-		lastTick = GlobalTime.getSec();
+    if (lastTick != GlobalTime.getMin()) {
+		lastTick = GlobalTime.getMin();
         progress.showProgress(1);
     }
     showDialog();
