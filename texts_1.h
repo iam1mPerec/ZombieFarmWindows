@@ -6,7 +6,7 @@ class texts_1
 public:
     inline static const char welcome[] = "Welcome to the game";
     inline static const char name[] = "Zombie's Farm Frenzy";
-    inline static const char credits[] = "Deadly Spirit";
+    inline static const char credits[] = "By 1mPerec";
     inline static const const char game[] = "New Game";
     inline static const char load[] = "Continue";
     inline static const char quit[] = "Exit";
