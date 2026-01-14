@@ -17,7 +17,7 @@
 
 using namespace std;
 
-ptime GMGameMenu::GlobalTime(0, 0, 0);
+ptime GMGameMenu::GlobalTime(7, 0, 0);
 void GMGameMenu::show()
 {
     side.clear(); // or clear only when needed
@@ -520,13 +520,15 @@ void GMGameMenu::scaterShotAnimation(const int DMG)
         
 		drawUndead();
 
-        if (horde.exists(3 - frame / 8)) {
+        if (horde.exists(3 - (frame / 8))) {
             blink(3 - frame / 8, frame % 2);
-            if (frame % 8 == 1) horde.getUnit(3 - frame / 8)->damage(DMG);
+            if (frame % 8 == 1) horde.getUnit(3 - (frame / 8))->damage(DMG);
         }
-        if (horde.exists(4 + frame / 8)) {
+        if (horde.exists(4 + (frame / 8))) {
             blink(4 + frame / 8, frame % 2);
-            if (frame % 8 == 1) horde.getUnit(4 + frame / 8)->damage(DMG);
+            if (frame % 8 == 1) {
+                horde.getUnit(4 + (frame / 8))->damage(DMG);
+            }
         }
 
         print();
@@ -610,20 +612,23 @@ void GMGameMenu::HumanSlashedAnimation(const int position)
             int AttackerPos = horde.getAttackerPos();
             int dmg = horde.getUnit(AttackerPos)->getAttack();
             troops.getUnit(position)->damaged(dmg);
+            clear();
+			drawAll();
+            drawUndead();
 
             if (horde.getAttacker()->getType() == ghoul || horde.getAttacker()->getType() == leaper)
             {
-                ZombieBiteAninmation();
-                horde.getAttacker()->damage(-(dmg * 25 + horde.getAttacker()->getLvl()) / 100);
+                ZombieBiteAninmation(dmg, position);
             }
-
-            horde.getAttacker()->usedTurn();
-            clear();
-            drawUndead();
-            drawAll();
-            troops.getUnit(position)->fine();
-            print();
-            whosTurn();
+            else {
+                horde.getAttacker()->usedTurn();
+                clear();
+                drawUndead();
+                drawAll();
+                troops.getUnit(position)->fine();
+                print();
+                whosTurn();
+            }
         });
 }
 
@@ -4386,15 +4391,16 @@ void GMGameMenu::healingAnimation()
     
 }
 
-void GMGameMenu::ZombieBiteAninmation()
+void GMGameMenu::ZombieBiteAninmation(const int dmg, const int position)
 {
-    m_engine->startAnimation(16, 0.1f, [this](int frame, int totalFrames) {
+    char front[2][9] =
+    {
+        " \\/\\/\\/ ",
+        "  /\\/\\  "
+    };
+    m_engine->startAnimation(16, 0.1f, [=](int frame, int totalFrames) {
         int count = 16 - frame;
-        char front[2][9] =
-        {
-            " \\/\\/\\/ ",
-            "  /\\/\\  "
-        };
+        
         int selectedZombie = horde.getAttackerPos();
         for (int j = 0; j < 8; j++)
         {
@@ -4420,7 +4426,15 @@ void GMGameMenu::ZombieBiteAninmation()
             }
         }
         print();
-		});
+        }, [=] {
+            horde.getAttacker()->damage(-(dmg * 25 + horde.getAttacker()->getLvl()) / 100);
+            horde.getAttacker()->usedTurn();
+            clear();
+            drawUndead();
+            troops.getUnit(position)->fine();
+            print();
+            whosTurn();
+        });
 }
 
 void GMGameMenu::massHealAnimation()

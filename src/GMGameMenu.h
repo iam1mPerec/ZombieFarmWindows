@@ -81,7 +81,7 @@ protected:
     void ZombieCritAnimation(const int crit);
     void ZombiePirsAnimation(const bool setBleeding, const int dmg = 0);
     void ZombieBuffAnimation();
-    void ZombieBiteAninmation();
+    void ZombieBiteAninmation(const int dmg, const int position);
     void healingAnimation();
     void massHealAnimation();
     void scaterShotAnimation(const int DMG);
