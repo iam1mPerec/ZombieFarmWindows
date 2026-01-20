@@ -75,7 +75,7 @@ void ptime::fly(float fElapsedTime)
 	accumulator += fElapsedTime;
     if(accumulator >= 0.1f)
     {
-		pSec +=3;
+		pSec +=6;
         accumulator -= 0.1f;
 	}
     if (pSec >= 60)

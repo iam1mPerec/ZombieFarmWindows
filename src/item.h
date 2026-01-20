@@ -28,6 +28,7 @@ public:
     char getTitle(const int i) const;
     char getPic(int j, int i) const;
     char getName(const int i) const;
+    const char* getTitle() const;
     char getDescript(int j, int i) const;
     void fillDescription(const char* Descript);
     void fillName(const char* Name);

@@ -49,7 +49,6 @@ protected:
     bool capture;
     bool selling;
     bool revive;
-    bool isFirstAid;
     bool NightRaid;
 
     events_list   list;
@@ -118,7 +117,7 @@ protected:
     void load();
     void clear();
     void hide();
-    void attack(eSkipTo switchTo = eSkipTo::crit);
+    void attack(eSkipTo switchTo, const int dmg);
     void splash(const int dmg, const int splash);
     void drawInventory();
     void drawStats();

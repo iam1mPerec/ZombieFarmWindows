@@ -1,6 +1,6 @@
 $
 Blast
-300
+100
 25
 Massive explosion         ^
 is caused by this         ^
@@ -8,7 +8,7 @@ thing in a small          ^
 area. Deals up to 300 dmg ^
 $
 Nuke
-600
+200
 75
 Massive explosion  ^
 is caused by this  ^
@@ -16,7 +16,7 @@ thing in a small   ^
 area. Deals up to 600 dmg ^
 $
 Cherry
-900
+300
 100
 Ch-ch-ch-ch-ch ^
 Cherry BOMB!!! ^

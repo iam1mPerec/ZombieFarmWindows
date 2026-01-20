@@ -32,8 +32,8 @@ Monday$Socks
 200
 5
 0
-Those socks lived many ^
-for mondays and will   ^
+Those socks lived for  ^
+many mondays and will  ^
 for many more to come  ^
 $
 Bad$Steps

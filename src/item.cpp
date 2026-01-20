@@ -299,9 +299,16 @@ void item::clearDescript()
     }
 }
 
+
+
 char item::getName(const int i) const
 {
     return name[i];
+}
+
+const char* item::getTitle() const
+{
+    return title;
 }
 
 int item::getPrice() const

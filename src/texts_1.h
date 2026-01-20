@@ -4,8 +4,8 @@ class texts_1
 {
     texts_1();  // private constructor if you don't want instances
 public:
-    inline static const char welcome[] = "Welcome to the game";
-    inline static const char name[] = "Zombie's Farm Frenzy";
+    inline static const char welcome[] = "Welcome to";
+    inline static const char name[] = "Zombie  Farm";
     inline static const char credits[] = "By 1mPerec";
     inline static const const char game[] = "New Game";
     inline static const char load[] = "Continue";

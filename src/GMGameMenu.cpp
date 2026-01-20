@@ -17,7 +17,7 @@
 
 using namespace std;
 
-ptime GMGameMenu::GlobalTime(7, 0, 0);
+ptime GMGameMenu::GlobalTime(7, 2, 0);
 void GMGameMenu::show()
 {
     side.clear(); // or clear only when needed
@@ -516,17 +516,17 @@ void GMGameMenu::heal()
 
 void GMGameMenu::scaterShotAnimation(const int DMG)
 {
-    m_engine->startAnimation(33, 0.12f, [=](int frame, int totalFrames) {
+    m_engine->startAnimation(32, 0.12f, [=](int frame, int totalFrames) {
         
 		drawUndead();
 
         if (horde.exists(3 - (frame / 8))) {
             blink(3 - frame / 8, frame % 2);
-            if (frame % 8 == 1) horde.getUnit(3 - (frame / 8))->damage(DMG);
+            if (frame % 8 == 7) horde.getUnit(3 - (frame / 8))->damage(DMG);
         }
         if (horde.exists(4 + (frame / 8))) {
             blink(4 + frame / 8, frame % 2);
-            if (frame % 8 == 1) {
+            if (frame % 8 == 7) {
                 horde.getUnit(4 + (frame / 8))->damage(DMG);
             }
         }
@@ -814,7 +814,7 @@ void GMGameMenu::drawFinalInfoScreen()
         " ___________________________________________________________________ ",
         "| Info                                                              |",
         "|                                                                   |",
-        "| Zombie's Farm Frenzy is a strategy farm frenzy based RPG.         |",
+        "| Zombie Farm is a strategy farm frenzy based RPG.                  |",
         "| Hope you enjoy your time here.                                    |",
         "|                                                                   |",
         "|                                                                   |",
@@ -2128,7 +2128,7 @@ void GMGameMenu::ZombieCritAnimation(const int crit)
 	    print();
         }, [=] {
             horde.getUnit(selectedZombie)->damage(crit);
-			attack(eSkipTo::stun);
+			attack(eSkipTo::stun, troops.getAttacker()->getDamage());
     });
 }
 
@@ -2206,7 +2206,7 @@ void GMGameMenu::ZombieStunnedAnimation(const int stunedFor)
             if (troops.getAttacker() != nullptr && stunedFor != 0) {
                 horde.getUnit(selectedZombie)->setStunned(stunedFor);
                 drawUndead();
-                attack(eSkipTo::pirs);
+                attack(eSkipTo::pirs, troops.getAttacker()->getDamage());
             }
             else {
                 if (horde.exists(selectedZombie)) {
@@ -2320,7 +2320,7 @@ void GMGameMenu::functional()
     {
         drawAll();
     }
-    if (GlobalTime.getSec() % 6 == 0 && farmerShownAt != GlobalTime.getSec())
+    if (GlobalTime.getSec() % 3 == 0 && farmerShownAt != GlobalTime.getSec())
     {
 		farmerShownAt = GlobalTime.getSec();
         farmerAnimation.show();
@@ -3333,6 +3333,7 @@ void GMGameMenu::Zselector(const int position)
 void GMGameMenu::manipulator_Inventory(eControls controls)
 {
     bool exit = false;
+    item* item = nullptr;
 
     if (controls == eControls::UP)
     {
@@ -3448,6 +3449,7 @@ void GMGameMenu::manipulator_Inventory(eControls controls)
         {
             side.setMenuOption(options::attacking);
         }
+		selectedZombie = -1;
         exit = true;
     }
 
@@ -3516,32 +3518,31 @@ void GMGameMenu::manipulator_Inventory(eControls controls)
             if (items.getItem((x2 - 5) + y2 * 18))
             {
                 unit* Unit = troops.getUnit(y1, x1);
-                item* Item = items.getItem(x2 - 5 + y2 * 18);
+                item = items.getItem(x2 - 5 + y2 * 18);
                 char buff[20] = {};
                 char dbuff[12] = {};
                 for (int i = 0; i < 20; i++)
                 {
-                    buff[i] = Item->getName(i);
+                    buff[i] = item->getName(i);
                 }
                 for (int i = 0; i < 12; i++)
                 {
-                    if (Item->getPic(1, i + 1) != ' ')
+                    if (item->getPic(1, i + 1) != ' ')
                     {
-                        dbuff[i] = Item->getPic(1, i + 1);
+                        dbuff[i] = item->getPic(1, i + 1);
                     }
                     else
                     {
                         break;
                     }
                 }
-                switch (Item->getType())
+                switch (item->getType())
                 {
                 case equipment:
-                    equip(Item, dbuff, Unit, exit);
+                    equip(item, dbuff, Unit, exit);
                     break;
                 case consumables:
-					isFirstAid = false;
-                    use(Item, dbuff, Unit, exit);
+                    use(item, dbuff, Unit, exit);
                     break;
                 default:
                     break;
@@ -3599,13 +3600,17 @@ void GMGameMenu::manipulator_Inventory(eControls controls)
     {
         clear();
         drawUndead();
-		zombieSelector();
+        drawAll();
         whosTurn();
-        if (isFirstAid) {
-            drawAll();
+
+		if (!item) return;
+        else if (equals(item->getTitle(), "Revive") || equals(item->getTitle(), "Bandages")) {
             x1 = 0;
 			y1 = 0;
             choose(x1, y1);
+        }
+        else if (equals(item->getTitle(), "Bomb")) {
+			zombieSelector();
         }
     }
     else
@@ -3698,23 +3703,23 @@ void GMGameMenu::use(item* item, char* name, unit* unit, bool& exit)
         {
             exit = true;
             usable = item;
-            side.setMenuOption(bombing);
 			selectedZombie = 0;
+            side.setMenuOption(bombing);
         }
         if (equals(name, "Revive"))
         {
             exit = true;
             revive = true;
-            isFirstAid = true;
             usable = item;
+            selectedZombie = -1;
             side.setMenuOption(firstAid);
         }
         if (equals(name, "Bandages"))
         {
             exit = true;
             revive = false;
-            isFirstAid = true;
             usable = item;
+            selectedZombie = -1;
             side.setMenuOption(firstAid);
         }
     }
@@ -4120,9 +4125,9 @@ void GMGameMenu::blink(const int position, bool present)
     }
 }
 
-void GMGameMenu::splash(const int dmg, const int splash)
+void GMGameMenu::splash(const int dmg, const int splashRate)
 {
-    if (splash)
+    if (splashRate)
     {
         if (horde.exists(selectedZombie - 1) || horde.exists(selectedZombie + 1))
         {
@@ -4139,21 +4144,21 @@ void GMGameMenu::splash(const int dmg, const int splash)
                 print();
             }, [=] 
             {
-                int s = (dmg * splash) / 100;
+                int splashDmg = (dmg * splashRate) / 100;
 
                 if (horde.exists(selectedZombie - 1))
                 {
-                    horde.getUnit(selectedZombie - 1)->damage(s);
+                    horde.getUnit(selectedZombie - 1)->damage(splashDmg);
                 }
                 if (horde.exists(selectedZombie + 1))
                 {
-                    horde.getUnit(selectedZombie + 1)->damage(s);
+                    horde.getUnit(selectedZombie + 1)->damage(splashDmg);
                 }
                 drawUndead();
-                attack(eSkipTo::slash);
+                attack(eSkipTo::slash, dmg);
             });
 
-        }
+        } else attack(eSkipTo::slash, dmg);
     }
 }
 
@@ -4215,7 +4220,7 @@ void GMGameMenu::manipulator_Slashing(eControls controls)
 
     if (controls == eControls::SUBMIT)
     {
-        attack(eSkipTo::crit);
+        attack(eSkipTo::crit, troops.getAttacker()->getDamage());
 		exit = true;
     }
 
@@ -4286,8 +4291,7 @@ void GMGameMenu::manipulator_Bombing(eControls controls)
         drawUndead();
         selector();
         usable->consume();
-        zombieSlashedAnimation(usable->getProperty());
-        splash(usable->getProperty(), 50);
+        splash(usable->getProperty(), 100);
         side.setMenuOption(attacking);
         resetVariables();
         whosTurn();
@@ -4594,7 +4598,7 @@ void GMGameMenu::ZombiePirsAnimation(const bool setBleeding, const int dmg)
         if (setBleeding) {
             horde.getUnit(selectedZombie)->setBleeding(dmg, 3);
             horde.getUnit(selectedZombie)->bleedOut();
-            attack(eSkipTo::splash);
+            attack(eSkipTo::splash, troops.getAttacker()->getDamage());
         }
         else 
         {
@@ -4657,7 +4661,7 @@ void GMGameMenu::crit(const int crit)
     ZombieCritAnimation(critDmg);
 }
 
-void GMGameMenu::attack(eSkipTo switchTo)
+void GMGameMenu::attack(eSkipTo switchTo, const int dmg)
 {
     clear();
     drawAll();
@@ -4684,12 +4688,11 @@ void GMGameMenu::attack(eSkipTo switchTo)
 
         case eSkipTo::splash:
             SPLASH = troops.getAttacker()->getSplash();
-            DMG = troops.getAttacker()->getDamage();
-            if (SPLASH) return splash(DMG, SPLASH);
+            if (SPLASH) return splash(dmg, SPLASH);
             [[fallthrough]];
 
         default:
-            slash(troops.getAttacker()->getDamage());
+            slash(dmg);
     }
 }
 
@@ -5270,7 +5273,6 @@ GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
     revive(false),
     selling(false),
     battle(false),
-	isFirstAid(false),
     store(wood),
     capture(false),
     usable(nullptr),
@@ -5362,13 +5364,23 @@ GMGameMenu::GMGameMenu(bool Loading, engine* engine, char** screen) :
         troops.addSolder(0, 1, 10);
         troops.addSolder(0, 2, 10);
 
-        items.addItem(loader.helmet(Helmet::Lunatic));
-        items.addItem(loader.helmet(Helmet::UltraGoggles));
+        items.addItem(loader.boots(Boots::MondaySocks));
+        items.addItem(loader.weapon(Weapon::RustyShovel));
 
-        items.addItem(loader.potion(Potion::Lotion, 25));
-        items.addItem(loader.bomb(Bomb::Nuke, 20));
-        items.addItem(loader.grenade(Grenade::Nova, 25));
-        items.addItem(loader.bandages(Bandages::OldStrips, 20));
+        items.addItem(loader.bomb(Bomb::Nuke, 2));
+
+        /*
+        possession.buildRoad();
+        possession.buildBaracks();
+        possession.upgradeTentSize();
+        possession.upgradeTentSize();
+        possession.upgradeTentSize();
+        possession.upgradeHomeSize();
+        possession.upgradeHomeSize();
+        MyField.upgrade();
+        MyField.upgrade();
+        MyField.upgrade();
+        */
 
         mapResources();
         showTime();
